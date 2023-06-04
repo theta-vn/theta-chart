@@ -6,3 +6,7 @@ Core chart written in rust
 cargo test -- --show-output
 
 cargo test --test data -- --show-output
+
+          function      file
+             |           |              
+`cargo test new --test scale -- --show-output`

@@ -1,11 +1,11 @@
 mod color;
 pub use self::color::*;
 
-mod data;
-pub use self::data::*;
+mod models;
+pub use self::models::*;
 
-mod scale;
-pub use self::scale::*;
+mod scales;
+pub use self::scales::*;
 
-mod chart;
-pub use self::chart::*;
+// mod chart;
+// pub use self::chart::*;

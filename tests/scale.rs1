@@ -1,0 +1,31 @@
+use theta_chart::*;
+
+#[test]
+fn create_scale_line() {
+    let f1 = Number::F64(1.0);
+    let f2 = Number::I64(2);
+    let data_line = Linear::new(vec![f1, f2]);
+
+    let scale = Scale::<Linear>{data: data_line };
+    dbg!(scale);
+}
+
+#[test]
+fn new_sscale() {
+    let f1 = Number::F64(1.0);
+    let f2 = Number::I64(2);
+    let data_line = Linear::new(vec![f1, f2]);
+
+    let scale= Scale::new(data_line);
+    dbg!(scale);
+}
+
+// #[test]
+// fn new_scale() {
+//     let f1 = Number::F64(1.0);
+//     let f2 = Number::I64(2);
+//     let data_line = SLinear::new(vec![f1, f2]);
+
+//     let scale= Scale::new(data_line);
+//     dbg!(scale);
+// }
