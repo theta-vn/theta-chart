@@ -1,6 +1,8 @@
 use na::{Isometry3, Point3, Vector3};
 use nalgebra as na;
 
+use crate::Vector;
+
 use super::TAU;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -50,11 +52,15 @@ impl Point {
         Point(p)
     }
 
-    pub fn rotate_tau(self, tau: f64) -> Point {
+    pub fn rotate_tau(&self, tau: f64) -> Point {
         let axisangle = Vector3::z() * tau;
         let iso = Isometry3::new(Vector3::default(), axisangle);
         let p = iso * self.value();
         Point(p)
+    }
+
+    pub fn translate(&self, v: &Vector) -> Point {        
+        Point::new(self.get_x() + v.get_x(), self.get_y() + v.get_y())
     }
 }
 

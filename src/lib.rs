@@ -11,3 +11,6 @@ pub use self::models::*;
 
 mod algebra;
 pub use self::algebra::*;
+
+mod shape;
+pub use self::shape::*;
