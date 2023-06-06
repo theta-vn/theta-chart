@@ -1,6 +1,2 @@
 # theta-chart
-Core chart written in rust
-
-
-# Test
-cargo test -- --show-output
+`theta_chart` is a collection of utilities to make performing certain calculations more convenient
