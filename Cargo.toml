@@ -2,6 +2,11 @@
 name = "theta-chart"
 version = "0.0.1"
 edition = "2021"
+authors = ["LangPham"]
+license = "MIT"
+repository = "https://github.com/theta-vn/theta-chart"
+description = "Theta_chart is a collection of utilities to make performing certain calculations more convenient"
+readme = "./README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
