@@ -1,8 +1,9 @@
 use crate::{Point, Vector};
 #[derive(Debug)]
+/// Store data for one line on chart
 pub struct Line {
     origin: Point,
-    vector: Vector
+    vector: Vector,
 }
 
 impl Line {
@@ -14,7 +15,7 @@ impl Line {
         self.origin.clone()
     }
 
-    pub fn  get_end_point(&self) -> Point {
+    pub fn get_end_point(&self) -> Point {
         self.origin.translate(&self.vector)
     }
 }

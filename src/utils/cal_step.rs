@@ -29,6 +29,7 @@ impl CalStep {
         }
     }
 
+    // calculation and rounding for scale with 1,2,5
     pub fn cal_scale(&self) -> f64 {
         let scale = cal_scale(self.focus);
         let multi_10 = self.multi_10;
@@ -53,9 +54,9 @@ fn cal_multi(num: f64, multi: i64) -> (f64, i64) {
     }
 }
 
-pub fn cal_scale(num: i64) -> i64 {
+fn cal_scale(num: i64) -> i64 {
     let string = format!("{:#0b}", num);
-    let count_bit = string.len() - 2;    
+    let count_bit = string.len() - 2;
     if count_bit > 6 {
         100
     } else if count_bit > 5 {

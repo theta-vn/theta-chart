@@ -1,4 +1,4 @@
-use theta_chart::*;
+use theta_chart::{self, color::Color};
 
 #[test]
 fn color_form() {

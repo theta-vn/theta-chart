@@ -6,6 +6,7 @@ use crate::Vector;
 use super::TAU;
 
 #[derive(Debug, Clone, PartialEq)]
+/// Store data for point on chart
 pub struct Point(Point3<f64>);
 
 impl Default for Point {
@@ -59,7 +60,7 @@ impl Point {
         Point(p)
     }
 
-    pub fn translate(&self, v: &Vector) -> Point {        
+    pub fn translate(&self, v: &Vector) -> Point {
         Point::new(self.get_x() + v.get_x(), self.get_y() + v.get_y())
     }
 }

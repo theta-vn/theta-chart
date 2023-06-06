@@ -1,8 +1,9 @@
 use crate::{Point, Vector};
 #[derive(Debug)]
+/// Store data for rectangle on chart
 pub struct Rec {
     origin: Point,
-    vector: Vector
+    vector: Vector,
 }
 
 impl Rec {

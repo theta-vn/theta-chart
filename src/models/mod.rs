@@ -5,7 +5,7 @@ mod category;
 pub use self::category::Category;
 
 mod scale;
-pub use self::scale::{ScaleLinear, ScaleCategory};
+pub use self::scale::{ScaleCategory, ScaleLinear};
 
 mod cartesian;
 pub use self::cartesian::Cartesian;

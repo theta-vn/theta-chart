@@ -1,10 +1,10 @@
+use na::{Isometry3, Point3, Vector3};
 use nalgebra as na;
-use na::{Point3, Vector3, Isometry3};
 
 use crate::Point;
 
-
 #[derive(Debug, Clone)]
+/// Store data for vector on chart
 pub struct Vector(Vector3<f64>);
 
 impl Default for Vector {
@@ -29,8 +29,8 @@ impl Vector {
         self.0.y
     }
 
-    pub fn to_point(&self) -> Point {        
-        let point = Point3::from(self.get());        
+    pub fn to_point(&self) -> Point {
+        let point = Point3::from(self.get());
         Point::new(point.x, point.y)
     }
 
@@ -38,7 +38,7 @@ impl Vector {
         (self.get_x().powf(2.) + self.get_y().powf(2.)).sqrt()
     }
 
-    pub fn az_rotate(self, angle: f64) -> Vector {        
+    pub fn az_rotate(self, angle: f64) -> Vector {
         let axisangle = Vector3::z() * angle;
         let iso = Isometry3::new(Vector3::default(), axisangle);
         let m = iso * self.get();
@@ -48,5 +48,4 @@ impl Vector {
         // Vector::default()
         Vector(m)
     }
-
 }

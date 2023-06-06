@@ -1,6 +1,7 @@
-use crate::{Color, ScaleCategory};
+use crate::{color::Color, ScaleCategory};
 
 #[derive(Debug, Clone, Default)]
+/// A series of labels represented on a chart
 pub struct Category {
     labels: Vec<String>,
     colors: Vec<Color>,

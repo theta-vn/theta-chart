@@ -1,6 +1,7 @@
 use crate::{utils::*, ScaleLinear};
 
 #[derive(Debug, Clone, Default)]
+/// A series of numbers represented on a chart
 pub struct Linear {
     series: Vec<f64>,
     is_float: bool,

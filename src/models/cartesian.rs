@@ -1,4 +1,5 @@
 #[derive(Debug, Clone, Default)]
+/// A Cartesian chart
 pub struct Cartesian<T, U> {
     ax: T,
     ay: U,
