@@ -1,7 +1,7 @@
 use theta_chart::*;
 
 #[test]
-fn create_catersian_ll() {
+fn c1artersian_create_ll() {
     let linear = Linear::new(vec![1.0, 2.0]);
 
     let category = Category::from(vec!["A", "B"]);

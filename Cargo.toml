@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 palette = "0.7.2"
 nalgebra = "0.32.2"
+approx = "0.5.1"
