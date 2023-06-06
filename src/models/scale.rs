@@ -1,40 +1,13 @@
-// use crate::{Number, ScaleLinear};
+use crate::Color;
 
 pub trait ScaleLinear {
     fn series(&self) -> Vec<f64>;
     fn is_float(&self) -> bool;
+    fn domain(&self) -> (f64, f64);
+    fn count_distance_step(&self) -> (usize, f64, usize);
 }
 
 pub trait ScaleCategory {
-    fn labels(&self) -> Vec<String>;    
+    fn labels(&self) -> Vec<String>;
+    fn colors(&self) -> Vec<Color>;
 }
-
-
-// #[derive(Debug, Clone)]
-// pub struct Scale<T> {
-//     pub data: T
-// }
-
-// impl<T> Scale<T>
-//     where T: Clone
-// {
-//     pub fn new(data: T) -> Scale<T> {
-//         Scale{
-//             data
-//         }
-//     }
-// }
-
-// // impl Scale<Number> {
-// //     pub fn linear(&self) -> Vec<Number> {
-// //         self.data
-// //     }
-// // }
-
-// // impl<T> ScaleLinear for Scale<T>
-// // where Number: T
-// // {
-// //     fn series(&self) -> Vec<T> {
-// //         self.data
-// //     }
-// // }

@@ -1,5 +1,5 @@
-use std::{str::FromStr};
-use palette::{Srgb, Lch, IntoColor, FromColor, ShiftHue, rgb::Rgb};
+use palette::{rgb::Rgb, FromColor, IntoColor, Lch, ShiftHue, Srgb};
+use std::str::FromStr;
 
 pub const COLOR_PRIMARY_U32: u32 = 0x005bbe;
 pub const SHIFT_HUE: f32 = 70.;
@@ -14,7 +14,7 @@ impl Default for Color {
 }
 
 impl From<&str> for Color {
-    fn from(hex: &str) -> Self { 
+    fn from(hex: &str) -> Self {
         match Rgb::from_str(hex) {
             Ok(color) => Self(color.into_format()),
             Err(_) => Self(Srgb::from(COLOR_PRIMARY_U32).into_format()),
