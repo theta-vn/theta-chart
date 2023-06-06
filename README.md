@@ -1,2 +1,2 @@
 # theta-chart
-Core chart written in rust
+`theta_chart` is a collection of utilities to make performing certain calculations more convenient
