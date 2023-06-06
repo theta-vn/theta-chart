@@ -55,9 +55,7 @@ fn cal_multi(num: f64, multi: i64) -> (f64, i64) {
 
 pub fn cal_scale(num: i64) -> i64 {
     let string = format!("{:#0b}", num);
-    dbg!(&string);
-    let count_bit = string.len() - 2;
-    dbg!(count_bit);
+    let count_bit = string.len() - 2;    
     if count_bit > 6 {
         100
     } else if count_bit > 5 {

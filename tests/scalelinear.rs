@@ -13,5 +13,6 @@ fn create_scale_line() {
     // dbg!(&series);
 
     let r = new.count_distance_step();
-    dbg!(r);
+    dbg!(&linear);
+    dbg!(&r);
 }
