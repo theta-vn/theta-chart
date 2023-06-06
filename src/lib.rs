@@ -1,7 +1,7 @@
 mod utils;
 
 mod color;
-pub use self::color::*;
+pub use self::color::{Color};
 
 mod models;
 pub use self::models::*;
