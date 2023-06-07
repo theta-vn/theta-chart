@@ -16,3 +16,33 @@ pub fn turn_to_radian(t: f64) -> f64 {
 pub fn degree_to_radian(d: f64) -> f64 {
     d / 360. * TAU
 }
+/// Check bit of input at n
+///
+/// Mainly for marking the position of the axes.
+///
+/// Mapping position axes
+/// ```quote
+///  0b  0       0      1     1
+///      |       |      |     |  
+///     left  bottom  right  top
+/// ```
+///
+///  # Example
+/// ```rust
+/// use theta_chart::get_bit_at;
+///
+/// let position_axes: usize = 0b0011;
+///
+/// let left = get_bit_at(position_axes, 0);
+/// assert_eq!(true, left);
+///
+/// let top = get_bit_at(position_axes, 3);
+/// assert_eq!(false, top);
+/// ```
+pub fn get_bit_at(input: usize, n: u8) -> bool {
+    if n < 32 {
+        input & (1 << n) != 0
+    } else {
+        false
+    }
+}

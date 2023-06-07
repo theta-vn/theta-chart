@@ -13,7 +13,7 @@ pub mod coord;
 // The data processing module, which implements algorithms to mapping the series data to descartes coordinate system.
 //
 
-/// Module contains predefined trait, which need implements to mapping the data set to descartes coordinate system.
+/// Module contains predefined trait and view, which needs implements to mapping the data set to descartes coordinate system.
 pub mod chart;
 // /// Module abstract the geometric object in descartes coordinate system.
 // pub mod shape;
