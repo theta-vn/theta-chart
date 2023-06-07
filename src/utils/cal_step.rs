@@ -1,5 +1,5 @@
 #[derive(Debug)]
-pub(crate) struct CalStep {
+pub struct CalStep {
     origin: f64,
     focus: i64,
     multi_10: i64,
@@ -112,4 +112,16 @@ fn cal_log10i(num: f64, log10: i64) -> (f64, i64) {
         num_int /= 10.;
         cal_log10i(num_int, log10_int)
     }
+}
+
+pub fn min_vec(vec: &Vec<f64>) -> f64 {
+    vec.iter().copied().fold(f64::NAN, f64::min)
+}
+
+pub fn max_vec(vec: &Vec<f64>) -> f64 {
+    vec.iter().copied().fold(f64::NAN, f64::max)
+}
+
+pub fn min_max_vec(vec: &Vec<f64>) -> (f64, f64) {
+    (min_vec(vec), max_vec(vec))
 }

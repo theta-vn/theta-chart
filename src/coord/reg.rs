@@ -1,4 +1,4 @@
-use crate::{Point, Vector};
+use crate::coord::{Point, Vector};
 #[derive(Debug)]
 /// Store data for rectangle on chart
 pub struct Rec {

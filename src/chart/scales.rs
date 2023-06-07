@@ -1,7 +1,7 @@
 use crate::color::Color;
 
 /// This trait allows to create a number axes for the chart
-pub trait ScaleLinear {
+pub trait ScaleNumber {
     fn series(&self) -> Vec<f64>;
     fn is_float(&self) -> bool;
     fn domain(&self) -> (f64, f64);
@@ -9,8 +9,11 @@ pub trait ScaleLinear {
 }
 
 /// This trait allows to create a label axes for the chart
-
-pub trait ScaleCategory {
+pub trait ScaleLabel {
     fn labels(&self) -> Vec<String>;
     fn colors(&self) -> Vec<Color>;
+}
+
+pub trait ScaleType {
+    fn scale_type(&self) -> String;
 }

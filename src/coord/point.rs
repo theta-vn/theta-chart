@@ -1,17 +1,25 @@
 use na::{Isometry3, Point3, Vector3};
 use nalgebra as na;
 
-use crate::Vector;
+use crate::{degree_to_radian, turn_to_radian};
 
-use super::TAU;
+use super::Vector;
+
+pub type Point3D = Point3<f64>;
 
 #[derive(Debug, Clone, PartialEq)]
-/// Store data for point on chart
-pub struct Point(Point3<f64>);
+/// Store data for a point on chart
+pub struct Point(Point3D);
 
 impl Default for Point {
     fn default() -> Self {
         Self(Point3::new(0., 0., 1.))
+    }
+}
+
+impl From<Point3D> for Point {
+    fn from(value: Point3D) -> Self {
+        Point(value)
     }
 }
 
@@ -20,7 +28,7 @@ impl Point {
         Self(Point3::new(x, y, 1.))
     }
 
-    pub fn value(&self) -> Point3<f64> {
+    pub fn value(&self) -> Point3D {
         self.0
     }
 
@@ -42,22 +50,21 @@ impl Point {
         self.clone()
     }
 
-    pub fn rotate_ratio(&self, ratio: f64) -> Point {
-        let arc = ratio * TAU;
-        let axisangle = Vector3::z() * arc;
-        let iso = Isometry3::new(Vector3::default(), axisangle);
-        // let axisangle = Vector3::z() * f64::consts::PI;
-        // let iso = Isometry3::new(Vector3::new(0.0, 0.0, 0.), axisangle);
-
-        let p = iso * self.value();
-        Point(p)
-    }
-
     pub fn rotate_tau(&self, tau: f64) -> Point {
         let axisangle = Vector3::z() * tau;
         let iso = Isometry3::new(Vector3::default(), axisangle);
         let p = iso * self.value();
         Point(p)
+    }
+
+    pub fn rotate_turn(&self, turn: f64) -> Point {
+        let tau = turn_to_radian(turn);
+        self.rotate_tau(tau)
+    }
+
+    pub fn rotate_degree(&self, degree: f64) -> Point {
+        let tau = degree_to_radian(degree);
+        self.rotate_tau(tau)
     }
 
     pub fn translate(&self, v: &Vector) -> Point {

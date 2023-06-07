@@ -2,7 +2,7 @@ use theta_chart::*;
 
 #[test]
 fn create_scale_line() {
-    let linear = Linear::new(vec![-36., 25., 10.]);
+    let linear = SeriesNumber::new(vec![-36., 25., 10.]);
     // let series = linear.series();
     // let domain = linear.domain();
 

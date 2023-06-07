@@ -1,18 +1,20 @@
-use crate::{utils::*, ScaleLinear};
+use crate::{chart::*, utils::cal_step::*};
+
+// use super::ScaleLinear;
 
 #[derive(Debug, Clone, Default)]
 /// A series of numbers represented on a chart
-pub struct Linear {
+pub struct SNumber {
     series: Vec<f64>,
     is_float: bool,
     domain: (f64, f64),
     stick: usize,
 }
 
-impl Linear {
+impl SNumber {
     pub fn new(series: Vec<f64>) -> Self {
         let domain = min_max_vec(&series);
-        Linear {
+        SNumber {
             series,
             is_float: true,
             domain,
@@ -28,9 +30,18 @@ impl Linear {
             stick: stick,
         }
     }
+
+    pub fn set_domain(&self, min: f64, max: f64) -> Self {
+        Self {
+            series: self.series.clone(),
+            is_float: self.is_float,
+            domain: (min, max),
+            stick: self.stick,
+        }
+    }
 }
 
-impl From<Vec<i64>> for Linear {
+impl From<Vec<i64>> for SNumber {
     fn from(value: Vec<i64>) -> Self {
         let mut series: Vec<f64> = vec![];
         for i in value {
@@ -46,7 +57,7 @@ impl From<Vec<i64>> for Linear {
     }
 }
 
-impl ScaleLinear for Linear {
+impl ScaleNumber for SNumber {
     fn series(&self) -> Vec<f64> {
         self.series.clone()
     }
@@ -80,5 +91,11 @@ impl ScaleLinear for Linear {
                 (min.abs() / step as f64).round() as usize,
             )
         }
+    }
+}
+
+impl ScaleType for SNumber {
+    fn scale_type(&self) -> String {
+        "ScaleNumber".to_string()
     }
 }

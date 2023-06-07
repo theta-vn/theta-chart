@@ -1,11 +1,13 @@
+use crate::chart::ScaleType;
+
 #[derive(Debug, Clone, Default)]
-/// A Cartesian chart
-pub struct Cartesian<T, U> {
+/// Store data for descartes coordinates system
+pub struct Chart<T: ScaleType, U: ScaleType> {
     ax: T,
     ay: U,
 }
 
-impl<T: Clone, U: Clone> Cartesian<T, U> {
+impl<T: Clone + ScaleType, U: Clone + ScaleType> Chart<T, U> {
     pub fn set_ax(self, ax: T) -> Self {
         Self {
             ax: ax,
