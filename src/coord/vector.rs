@@ -39,11 +39,15 @@ impl Vector {
         (self.get_x().powf(2.) + self.get_y().powf(2.)).sqrt()
     }
 
-    pub fn az_rotate_tau(self, tau: f64) -> Vector {
+    pub fn az_rotate_tau(&self, tau: f64) -> Vector {
         let axisangle = Vector3::z() * tau;
         let iso = Isometry3::new(Vector3::default(), axisangle);
         let m = iso * self.get();
         Vector(m)
+    }
+
+    pub fn multiply(&self, num: f64) -> Vector {        
+        Vector(num * self.get())
     }
 }
 

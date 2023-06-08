@@ -1,4 +1,5 @@
-use crate::color::Color;
+use crate::{color::Color, coord::{Point, Arc}};
+
 
 /// This trait allows to create a number axes for the chart
 pub trait ScaleNumber {
@@ -6,6 +7,8 @@ pub trait ScaleNumber {
     fn is_float(&self) -> bool;
     fn domain(&self) -> (f64, f64);
     fn count_distance_step(&self) -> (usize, f64, usize);
+    fn to_percent(&self) -> Vec<f64>;
+    fn gen_pie(&self,origin: Point, radius: f64) -> Vec<Arc>;
 }
 
 /// This trait allows to create a label axes for the chart

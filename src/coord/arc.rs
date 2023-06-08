@@ -1,3 +1,5 @@
+use nalgebra::ComplexField;
+
 use crate::{
     coord::{Point, Vector},
     TAU,
@@ -25,7 +27,7 @@ impl Arc {
 
     pub fn new_polar(origin: Point, begin: Vector, tau: f64) -> Self {
         let end = begin.clone().az_rotate_tau(tau);
-        let large = tau >= TAU / 2.0;
+        let large = tau.abs() >= TAU / 2.0;
         Self {
             origin,
             begin,
@@ -44,12 +46,12 @@ impl Arc {
         )
     }
 
-    // Todo: move to piechart
-    // pub fn gen_path(&self) -> String {
-    //     let radius = self.begin.module();
-    //     let (dx, dy) = self.delta_xy();
-    //     format!("M{},{} l{},{} a{},{}  0 {},1 {},{} Z",
-    //         self.origin.get_x(), self.origin.get_y(), self.begin.get_x(), self.begin.get_y(), radius, radius, self.large as i32 , dx, dy
-    //     )
-    // }
+    // TODO: cfg feature SVG
+    pub fn gen_path(&self) -> String {
+        let radius = self.begin.module();
+        let (dx, dy) = self.delta_xy();
+        format!("M{},{} l{},{} a{},{}  0 {},1 {},{} Z",
+            self.origin.get_x(), self.origin.get_y(), self.begin.get_x(), self.begin.get_y(), radius, radius, self.large as i32 , dx, dy
+        )
+    }
 }

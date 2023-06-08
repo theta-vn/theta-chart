@@ -1,4 +1,6 @@
-use crate::{chart::*, utils::cal_step::*};
+use std::vec;
+
+use crate::{chart::*, coord::*, utils::cal_step::*, TAU};
 
 // use super::ScaleLinear;
 
@@ -91,6 +93,25 @@ impl ScaleNumber for SNumber {
                 (min.abs() / step as f64).round() as usize,
             )
         }
+    }
+
+    fn to_percent(&self) -> Vec<f64> {
+        let total: f64 = self.series.iter().sum();
+        self.series.clone().into_iter().map(|f| f / total).collect()
+    }
+
+    fn gen_pie(&self, origin: Point, radius: f64) -> Vec<Arc> {
+        let series = self.series.clone();
+        let total: f64 = series.iter().sum();
+        let percent: Vec<f64> = series.clone().into_iter().map(|f| f / total).collect();
+        let mut vector_begin = Vector::new(0., radius);
+        let mut vec_arc: Vec<Arc> = vec![];
+        for p in percent {
+            let arc = Arc::new_polar(origin.clone(), vector_begin.clone(), p * TAU);
+            vector_begin = arc.end.clone();
+            vec_arc.push(arc);
+        }
+        vec_arc
     }
 }
 

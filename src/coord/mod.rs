@@ -12,4 +12,4 @@ pub use self::line::Line;
 pub use self::point::Point;
 pub use self::reg::Rec;
 pub use self::vector::Vector;
-pub use self::view::View;
+pub use self::view::CView;

@@ -10,6 +10,7 @@ fn arc_new() {
         false,
     );
     let arc_polar = Arc::new_polar(Point::new(3., 4.), Vector::new(0., 1.), -0.25 * TAU);
+    dbg!(&arc_polar);
     assert_relative_eq!(arc_oxy.delta_xy().0, arc_polar.delta_xy().0);
     assert_relative_eq!(arc_oxy.delta_xy().1, arc_polar.delta_xy().1);
 }
