@@ -17,6 +17,5 @@ fn color_create() {
 fn color_shift_hue() {
     let color = Color::default();
     let shift = color.shift_hue();
-    dbg!(&color, &shift);
     assert_ne!(color.to_string_hex(), shift.to_string_hex());
 }

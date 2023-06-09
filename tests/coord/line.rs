@@ -1,5 +1,5 @@
 use approx::{self, assert_relative_eq};
-use theta_chart::*;
+use theta_chart::coord::*;
 
 #[test]
 fn line_new() {
