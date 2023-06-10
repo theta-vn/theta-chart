@@ -2,5 +2,5 @@
 pub enum Category {
     #[default]
     Descartes,
-    Polar
+    Polar,
 }

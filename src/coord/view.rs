@@ -1,4 +1,9 @@
-use crate::{coord::{Point, Vector, Rec}, get_bit_at, chart::{Draw, Category}, utils::cal_step::min_vec};
+use crate::{
+    chart::{Category, Draw},
+    coord::{Point, Rec, Vector},
+    get_bit_at,
+    utils::cal_step::min_vec,
+};
 
 // use super::TView;
 
@@ -14,17 +19,17 @@ pub struct CView {
     position_axes: usize,
     // Interval to edge outer of axes
     padding: f64,
-    category: Category
-    
+    category: Category,
 }
 impl CView {
-    pub fn new(width: u64, height: u64, position_axes: usize, padding: u64) -> Self {
+    pub fn new(width: u64, height: u64, position_axes: u64, padding: u64) -> Self {
         let vector = Vector::new(width as f64, height as f64);
         let mut x = 0.0;
         let mut y = 0.0;
         let mut width = width as f64;
         let mut height = height as f64;
         let padding = padding as f64;
+        let position_axes = position_axes as usize;
 
         // Top axes
         if get_bit_at(position_axes, 0) {
@@ -37,7 +42,6 @@ impl CView {
         }
         // Bottom axes
         if get_bit_at(position_axes, 2) {
-            
             height -= padding;
         }
         // Left axes
@@ -51,7 +55,7 @@ impl CView {
             region: rec,
             position_axes: position_axes,
             padding: padding as f64,
-            category: Category::default()
+            category: Category::default(),
         }
     }
 
@@ -79,42 +83,49 @@ impl CView {
     }
 
     fn get_region_axes(&self, position: usize) -> Rec {
-        let padding = self.padding;        
+        let padding = self.padding;
         let inner = &self.get_inner();
-        
+
         match position {
             0 => Rec::new(Point::new(0., 0.), Vector::new(inner.get_x(), padding)),
-            1 => Rec::new(Point::new(inner.get_y(), 0.), Vector::new(padding, inner.get_y())),
-            2 => Rec::new(Point::new(0., inner.get_y()), Vector::new(inner.get_x(), padding)),
+            1 => Rec::new(
+                Point::new(inner.get_y(), 0.),
+                Vector::new(padding, inner.get_y()),
+            ),
+            2 => Rec::new(
+                Point::new(0., inner.get_y()),
+                Vector::new(inner.get_x(), padding),
+            ),
             3 => Rec::new(Point::new(0., 0.), Vector::new(padding, inner.get_y())),
-            _ => Rec::new(Point::default(), Vector::default())
+            _ => Rec::new(Point::default(), Vector::default()),
         }
     }
-    
+
     pub fn get_region_axes_first(&self) -> Rec {
         let position = self.get_position_axes_first();
         self.get_region_axes(position)
     }
 }
 
+impl From<Vec<u64>> for CView {
+    fn from(view: Vec<u64>) -> CView {
+        CView::new(view[0], view[1], view[2], view[3])
+    }
+}
+
 impl Draw for CView {
-    fn get_origin(&self) -> Point {        
+    fn get_origin(&self) -> Point {
         self.region.get_origin()
-        
     }
 
     fn get_outer(&self) -> Vector {
         self.get_vector()
-        
     }
 
-    fn get_inner(&self) -> Vector {        
-        self.region.get_vector()        
+    fn get_inner(&self) -> Vector {
+        self.region.get_vector()
     }
 
-
-
-    
     // fn get_region(&self) -> Rec {
     //     self.region.clone()
     // }
@@ -144,8 +155,6 @@ impl Draw for CView {
     fn get_radius(&self) -> f64 {
         let inner = self.get_inner();
         let diameter = min_vec(&vec![inner.get_x(), inner.get_y()]);
-        diameter/2.
+        diameter / 2.
     }
-
-    
 }

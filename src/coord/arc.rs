@@ -1,5 +1,3 @@
-use nalgebra::ComplexField;
-
 use crate::{
     coord::{Point, Vector},
     TAU,
@@ -50,8 +48,17 @@ impl Arc {
     pub fn gen_path(&self) -> String {
         let radius = self.begin.module();
         let (dx, dy) = self.delta_xy();
-        format!("M{},{} l{},{} a{},{}  0 {},1 {},{} Z",
-            self.origin.get_x(), self.origin.get_y(), self.begin.get_x(), self.begin.get_y(), radius, radius, self.large as i32 , dx, dy
+        format!(
+            "M{},{} l{},{} a{},{}  0 {},1 {},{} Z",
+            self.origin.get_x(),
+            self.origin.get_y(),
+            self.begin.get_x(),
+            self.begin.get_y(),
+            radius,
+            radius,
+            self.large as i32,
+            dx,
+            dy
         )
     }
 }

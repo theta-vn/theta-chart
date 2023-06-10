@@ -1,12 +1,12 @@
-use crate::chart::{ScaleType};
 use super::CView;
+use crate::chart::ScaleType;
 
 #[derive(Debug, Clone, Default)]
 /// Store data for descartes coordinates system
 pub struct Chart<X: ScaleType, Y: ScaleType> {
     ax: X,
     ay: Y,
-    view: CView
+    view: CView,
 }
 
 impl<X: Clone + ScaleType, Y: Clone + ScaleType> Chart<X, Y> {
@@ -14,7 +14,7 @@ impl<X: Clone + ScaleType, Y: Clone + ScaleType> Chart<X, Y> {
         Self {
             ax: ax,
             ay: self.ay.clone(),
-            view: self.view.clone()
+            view: self.view.clone(),
         }
     }
 
@@ -22,7 +22,7 @@ impl<X: Clone + ScaleType, Y: Clone + ScaleType> Chart<X, Y> {
         Self {
             ax: self.ax.clone(),
             ay: ay,
-            view: self.view.clone()
+            view: self.view.clone(),
         }
     }
 
@@ -30,7 +30,7 @@ impl<X: Clone + ScaleType, Y: Clone + ScaleType> Chart<X, Y> {
         Self {
             ax: self.ax.clone(),
             ay: self.ay.clone(),
-            view: view
+            view: view,
         }
     }
 
@@ -45,5 +45,4 @@ impl<X: Clone + ScaleType, Y: Clone + ScaleType> Chart<X, Y> {
     pub fn get_ay(&self) -> Y {
         self.ay.clone()
     }
-
 }

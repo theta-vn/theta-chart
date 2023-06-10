@@ -46,7 +46,7 @@ impl Vector {
         Vector(m)
     }
 
-    pub fn multiply(&self, num: f64) -> Vector {        
+    pub fn multiply(&self, num: f64) -> Vector {
         Vector(num * self.get())
     }
 }

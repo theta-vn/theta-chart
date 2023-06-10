@@ -7,4 +7,3 @@ pub use self::draw::Draw;
 
 mod category;
 pub use self::category::Category;
-
