@@ -1,5 +1,5 @@
-use crate::{Point, Vector};
-#[derive(Debug)]
+use crate::coord::{Point, Vector};
+#[derive(Debug, Clone, Default)]
 /// Store data for rectangle on chart
 pub struct Rec {
     origin: Point,
@@ -13,6 +13,10 @@ impl Rec {
 
     pub fn get_origin(&self) -> Point {
         self.origin.clone()
+    }
+
+    pub fn get_vector(&self) -> Vector {
+        self.vector.clone()
     }
 
     pub fn get_width(&self) -> f64 {
