@@ -10,13 +10,17 @@ pub trait ScaleNumber {
     fn domain(&self) -> (f64, f64);
     fn count_distance_step(&self) -> (usize, f64, usize);
     fn to_percent(&self) -> Vec<f64>;
-    fn gen_pie(&self, origin: Point, radius: f64) -> Vec<Arc>;
+    // For Pie
+    fn gen_pie(&self, origin: Point, radius: f64) -> Vec<Arc>;    
+    fn get_interval(&self, len: f64) -> f64;
+
 }
 
 /// This trait allows to create a label axes for the chart
 pub trait ScaleLabel {
     fn labels(&self) -> Vec<String>;
     fn colors(&self) -> Vec<Color>;
+    fn get_interval(&self, len: f64) -> f64;
 }
 
 pub trait ScaleType {

@@ -20,15 +20,18 @@ pub struct CView {
     // Interval to edge outer of axes
     padding: f64,
     category: Category,
+    margin: f64
 }
 impl CView {
-    pub fn new(width: u64, height: u64, position_axes: u64, padding: u64) -> Self {
-        let vector = Vector::new(width as f64, height as f64);
-        let mut x = 0.0;
-        let mut y = 0.0;
-        let mut width = width as f64;
-        let mut height = height as f64;
+    pub fn new(width: u64, height: u64, position_axes: u64, padding: u64, margin: u64) -> Self {
         let padding = padding as f64;
+        let margin = margin as f64;
+        let vector = Vector::new(width as f64, height as f64);
+        let mut x = 0.;
+        let mut y = 0.;
+        let mut width = width as f64 - 2. * margin;
+        let mut height = height as f64 - 2. * margin;
+        
         let position_axes = position_axes as usize;
 
         // Top axes
@@ -56,6 +59,7 @@ impl CView {
             position_axes: position_axes,
             padding: padding as f64,
             category: Category::default(),
+            margin: margin as f64
         }
     }
 
@@ -109,7 +113,7 @@ impl CView {
 
 impl From<Vec<u64>> for CView {
     fn from(view: Vec<u64>) -> CView {
-        CView::new(view[0], view[1], view[2], view[3])
+        CView::new(view[0], view[1], view[2], view[3], view[4])
     }
 }
 
@@ -156,5 +160,9 @@ impl Draw for CView {
         let inner = self.get_inner();
         let diameter = min_vec(&vec![inner.get_x(), inner.get_y()]);
         diameter / 2.
+    }
+
+    fn get_margin(&self) -> f64 {
+        self.margin
     }
 }

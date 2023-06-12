@@ -63,6 +63,11 @@ impl ScaleLabel for SLabel {
     fn colors(&self) -> Vec<Color> {
         self.colors.clone()
     }
+
+    fn get_interval(&self, len: f64) -> f64 {
+        let distance = self.labels.len();
+        len /( distance as f64)
+    }
 }
 
 impl ScaleType for SLabel {

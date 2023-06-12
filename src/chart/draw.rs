@@ -19,8 +19,8 @@ pub trait Draw {
     // Radius of inscribed circle
     fn get_radius(&self) -> f64;
 
-    // // Radius of inscribed circle
-    // fn get_region_axes(&self, position: usize) -> Rec;
+    // Margin
+    fn get_margin(&self) -> f64;
 
     fn chart_type(&self) -> Category;
 }

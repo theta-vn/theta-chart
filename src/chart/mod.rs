@@ -1,6 +1,6 @@
 mod scales;
-pub(crate) use self::scales::ScaleType;
-pub use self::scales::{ScaleLabel, ScaleNumber};
+// pub(crate) use self::scales::ScaleType;
+pub use self::scales::{ScaleLabel, ScaleNumber, ScaleType};
 
 mod draw;
 pub use self::draw::Draw;

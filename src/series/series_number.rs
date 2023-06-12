@@ -2,7 +2,6 @@ use std::vec;
 
 use crate::{chart::*, coord::*, utils::cal_step::*, TAU};
 
-// use super::ScaleLinear;
 
 #[derive(Debug, Clone, Default)]
 /// A series of numbers represented on a chart
@@ -43,8 +42,27 @@ impl SNumber {
     }
 }
 
+
+
 impl From<Vec<i64>> for SNumber {
     fn from(value: Vec<i64>) -> Self {
+        let mut series: Vec<f64> = vec![];
+        for i in value {
+            series.push(i as f64)
+        }
+        let domain = min_max_vec(&series);
+        Self {
+            series,
+            is_float: false,
+            domain,
+            stick: 0,
+        }
+    }
+}
+
+
+impl From<Vec<u64>> for SNumber {
+    fn from(value: Vec<u64>) -> Self {
         let mut series: Vec<f64> = vec![];
         for i in value {
             series.push(i as f64)
@@ -72,6 +90,7 @@ impl ScaleNumber for SNumber {
         self.domain
     }
 
+    
     fn count_distance_step(&self) -> (usize, f64, usize) {
         let (min, max) = self.domain();
         let count_distance = if self.stick == 0 { 10 } else { self.stick - 1 };
@@ -79,27 +98,30 @@ impl ScaleNumber for SNumber {
         if min >= 0. && max >= 0. {
             let mut step = max / count_distance as f64;
             step = CalStep::new(step).cal_scale();
-            ((max / step as f64).round() as usize, step, 0)
+            ((max / step as f64).ceil() as usize, step, 0)
         } else if min < 0. && max < 0. {
             let mut step = min / count_distance as f64;
             step = CalStep::new(step).cal_scale();
-            (0, step, (min.abs() / step as f64).round() as usize)
+            (0, step, (min.abs() / step as f64).ceil() as usize)
         } else {
             let mut step = (max - min) / count_distance as f64;
             step = CalStep::new(step).cal_scale();
             (
-                (max / step as f64).round() as usize,
+                (max / step as f64).ceil() as usize,
                 step,
-                (min.abs() / step as f64).round() as usize,
+                (min.abs() / step as f64).ceil() as usize,
             )
         }
     }
+
 
     fn to_percent(&self) -> Vec<f64> {
         let total: f64 = self.series.iter().sum();
         self.series.clone().into_iter().map(|f| f / total).collect()
     }
 
+
+    
     fn gen_pie(&self, origin: Point, radius: f64) -> Vec<Arc> {
         let series = self.series.clone();
         let total: f64 = series.iter().sum();
@@ -112,6 +134,11 @@ impl ScaleNumber for SNumber {
             vec_arc.push(arc);
         }
         vec_arc
+    }
+
+    fn get_interval(&self, len: f64) -> f64 {
+        let (distance_up, _step, distence_down) = self.count_distance_step();
+        len / ((distance_up + distence_down)as f64) 
     }
 }
 

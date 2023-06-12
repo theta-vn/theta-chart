@@ -74,7 +74,11 @@ fn cal_scale(num: i64) -> i64 {
             10
         }
     } else if count_bit == 3 {
-        5
+        if num > 6 {
+            10
+        } else {
+            5
+        }        
     } else {
         2
     }
