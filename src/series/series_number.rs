@@ -140,6 +140,31 @@ impl ScaleNumber for SNumber {
         let (distance_up, _step, distence_down) = self.count_distance_step();
         len / ((distance_up + distence_down)as f64) 
     }
+
+    fn gen_sticks_label_step(&self) -> (Vec<String>, f64) {
+        let (distance_up, step, distance_down) = self.count_distance_step();
+        let mut vec_string: Vec<String> = vec![];        
+        let (_, precision) = count_precision(step.clone(), 0);
+        dbg!(precision);
+        for index in 0..(distance_up + distance_down + 1) {
+            vec_string.push(format!("{:.prec$}", index as f64 * step, prec=precision));                  
+          
+        };
+        (vec_string, step)
+    }
+}
+
+fn count_precision(mut number: f64, mut count: usize) -> (f64, usize) {
+    
+    let floor = number - number.floor();
+    if floor == 0. {
+        return (number, count)
+    } else {
+        
+         number *= 10.;
+         count += 1;
+        count_precision(number, count)
+    }
 }
 
 impl ScaleType for SNumber {
