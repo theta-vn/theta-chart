@@ -1,4 +1,8 @@
-use crate::{chart::*, color::Color};
+use crate::{
+    chart::*,
+    color::Color,
+    coord::{Axes, Stick},
+};
 
 // use super::ScaleLabel;
 
@@ -56,17 +60,33 @@ impl From<Vec<&str>> for SLabel {
 }
 
 impl ScaleLabel for SLabel {
-    fn labels(&self) -> Vec<String> {
-        self.labels.clone()
-    }
+    // fn labels(&self) -> Vec<String> {
+    //     self.labels.clone()
+    // }
 
     fn colors(&self) -> Vec<Color> {
         self.colors.clone()
     }
 
-    fn get_interval(&self, len: f64) -> f64 {
+    fn get_intervale(&self, len: f64) -> f64 {
         let distance = self.labels.len();
-        len /( distance as f64)
+        len / (distance as f64)
+    }
+
+    fn gen_axes(&self) -> Axes {
+        let distance = self.labels.len();
+        let series = &self.labels;
+        let mut vec_stick: Vec<Stick> = vec![];
+        // For stick < 0
+        for index in 0..(distance) {
+            let stick = Stick::new(format!("{}", series[index]), index as f64 + 0.5);
+            vec_stick.push(stick);
+        }
+
+        Axes {
+            sticks: vec_stick,
+            step: 1.,
+        }
     }
 }
 

@@ -78,7 +78,7 @@ fn cal_scale(num: i64) -> i64 {
             10
         } else {
             5
-        }        
+        }
     } else {
         2
     }

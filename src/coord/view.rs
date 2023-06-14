@@ -17,10 +17,10 @@ pub struct CView {
     region: Rec,
     // Position of axes (use function get_bit_at to calculate)
     position_axes: usize,
-    // Interval to edge outer of axes
+    // intervale to edge outer of axes
     padding: f64,
     category: Category,
-    margin: f64
+    margin: f64,
 }
 impl CView {
     pub fn new(width: u64, height: u64, position_axes: u64, padding: u64, margin: u64) -> Self {
@@ -31,7 +31,7 @@ impl CView {
         let mut y = 0.;
         let mut width = width as f64 - 2. * margin;
         let mut height = height as f64 - 2. * margin;
-        
+
         let position_axes = position_axes as usize;
 
         // Top axes
@@ -59,7 +59,7 @@ impl CView {
             position_axes: position_axes,
             padding: padding as f64,
             category: Category::default(),
-            margin: margin as f64
+            margin: margin as f64,
         }
     }
 

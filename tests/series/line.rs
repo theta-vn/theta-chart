@@ -1,5 +1,5 @@
-use theta_chart::series::SNumber;
 use theta_chart::chart::ScaleNumber;
+use theta_chart::series::SNumber;
 
 #[test]
 fn new_series_number() {
@@ -19,6 +19,19 @@ fn from_series_number() {
 
     let vf64: Vec<f64> = vec![1., 2., 1.7];
     let linear = SNumber::new(vf64);
-    let a = linear.gen_sticks_label_step();
+    let a = linear.gen_axes();
     dbg!(a);
+}
+
+#[test]
+fn scale() {
+    let vf64: Vec<f64> = vec![1., 1.9, -1.7];
+    let linear = SNumber::new(vf64);
+    let domain = linear.domain();
+    dbg!(&domain);
+
+    let a = linear.count_distance_step();
+
+    dbg!(a);
+    dbg!(linear.gen_axes());
 }
