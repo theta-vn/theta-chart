@@ -73,13 +73,21 @@ impl ScaleLabel for SLabel {
         len / (distance as f64)
     }
 
+    fn scale(&self, value: f64) -> f64 {
+        let (min, max) = (0., self.labels.len() as f64);
+        let range = max - min;
+
+        let diff = value - min;
+        diff / range
+    }
+
     fn gen_axes(&self) -> Axes {
         let distance = self.labels.len();
         let series = &self.labels;
         let mut vec_stick: Vec<Stick> = vec![];
         // For stick < 0
         for index in 0..(distance) {
-            let stick = Stick::new(format!("{}", series[index]), index as f64 + 0.5);
+            let stick = Stick::new(format!("{}", series[index]), self.scale(index as f64 + 0.5));
             vec_stick.push(stick);
         }
 

@@ -40,18 +40,20 @@ fn new_series_time() {
 }
 
 #[test]
-fn scale_time() {
+fn scale() {
     let stime = STime::from((vec!["1982", "1986", "2017", "2020"], "%Y", "year"));
     dbg!(&stime);
     let domain = stime.domain();
     dbg!(&domain);
 
-    let distance = stime.count_distance_step();
-    dbg!(&distance);
+    // let distance = stime.count_distance_step();
+    // // dbg!(&distance);
 
-    let intervale = stime.get_intervale(800.);
-    dbg!(&intervale);
+    // let intervale = stime.get_intervale(800.);
+    // // dbg!(&intervale);
 
-    let vec_string = stime.gen_sticks_label_step();
-    dbg!(vec_string);
+    // let vec_string = stime.gen_sticks_label_step();
+    // dbg!(vec_string);
+
+    dbg!(stime.gen_axes());
 }

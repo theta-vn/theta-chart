@@ -1,5 +1,9 @@
-use crate::{chart::*, utils::cal_step::CalStep};
-use chrono::{Datelike, Duration, Months, NaiveDate, NaiveDateTime, NaiveTime, ParseError};
+use crate::{
+    chart::*,
+    coord::{Axes, Stick},
+    utils::cal_step::CalStep,
+};
+use chrono::{Datelike, NaiveDate, NaiveDateTime, NaiveTime, ParseError};
 use std::vec;
 
 #[derive(Debug, Clone)]
@@ -65,14 +69,21 @@ impl STime {
             _ => "",
         }
     }
-    //     // pub fn set_domain(&self, min: f64, max: f64) -> Self {
-    //     //     Self {
-    //     //         series: self.series.clone(),
-    //     //         is_float: self.is_float,
-    //     //         domain: (min, max),
-    //     //         stick: self.stick,
-    //     //     }
-    //     // }
+
+    pub fn series(&self) -> Vec<NaiveDateTime> {
+        self.series.clone()
+    }
+
+    pub fn get_value(&self, index: usize) -> f64 {
+        match self.unit.as_str() {
+            // "date" => "%Y-%m-%d",
+            // "month" => "%Y-%m",
+            "year" => self.series[index].year() as f64,
+            // "time" => "%H:%M:%S",
+            // "hour" => "%H:%M:%S",
+            _ => 1.,
+        }
+    }
 }
 
 impl From<(Vec<&str>, &str, &str)> for STime {
@@ -120,26 +131,7 @@ fn ndt_parse_from_str(str: &str, format: &str, get: &str) -> Result<NaiveDateTim
     }
 }
 
-// impl From<Vec<u64>> for SNumber {
-//     fn from(value: Vec<u64>) -> Self {
-//         let mut series: Vec<f64> = vec![];
-//         for i in value {
-//             series.push(i as f64)
-//         }
-//         let domain = min_max_vec(&series);
-//         Self {
-//             series,
-//             is_float: false,
-//             domain,
-//             stick: 0,
-//         }
-//     }
-// }
 impl ScaleTime for STime {
-    fn series(&self) -> Vec<NaiveDateTime> {
-        self.series.clone()
-    }
-
     fn domain(&self) -> (NaiveDateTime, NaiveDateTime) {
         if self.series().len() > 0 {
             let binding = self.series();
@@ -151,11 +143,19 @@ impl ScaleTime for STime {
         }
     }
 
+    fn domain_unix(&self) -> (f64, f64) {
+        let (min, max) = self.domain();
+        match self.unit.as_str() {
+            "year" => (min.year() as f64, max.year() as f64),
+            _ => (0., 0.),
+        }
+    }
+
     fn count_distance_step(&self) -> (f64, f64) {
         match self.get_unit().as_str() {
             "year" => {
-                let (min, max) = self.domain();
-                let dur = max.year() - min.year();
+                let (min, max) = self.domain_unix();
+                let dur = max - min;
                 dbg!(&dur);
                 let mut step = dur as f64 / 5.;
                 step = CalStep::new(step.ceil()).cal_scale();
@@ -163,6 +163,7 @@ impl ScaleTime for STime {
 
                 (dur as f64 / step, step)
             }
+            // TODO: for month, day, time
             _ => (1., 0.),
         }
     }
@@ -172,35 +173,56 @@ impl ScaleTime for STime {
         len / distance
     }
 
-    fn gen_sticks_label_step(&self) -> (Vec<String>, f64) {
-        let (min, max) = self.domain();
-        let series = self.series();
-        let (distance, step) = self.count_distance_step();
-        // let mut count_stick = distance.ceil() as i32 + 1;
-
-        let mut vec_string: Vec<String> = vec![];
-        // let interger_part = distance as u32;
-        // dbg!(interger_part);
-        let format = self.get_format();
-        let unit = self.get_unit();
-        for index in 0..(series.len()) {
-            match unit.as_str() {
-                "year" => {
-                    let value = series[index];
-                    vec_string.push(value.format(format).to_string());
-                }
-                _ => vec_string.push(format!("{}", index)),
-            }
-        }
-        (vec_string, step)
-    }
-
     fn scale_intervale(&self, value: NaiveDateTime) -> f64 {
         let (min, _max) = self.domain();
         let unit = self.get_unit();
         match unit.as_str() {
             "year" => (value.year() - min.year()) as f64,
             _ => (value.year() - min.year()) as f64,
+        }
+    }
+
+    fn scale(&self, value: NaiveDateTime) -> f64 {
+        let unit = self.get_unit();
+        match unit.as_str() {
+            "year" => {
+                let (min, max) = self.domain_unix();
+                let range = max - min;
+
+                let diff = value.year() as f64 - min;
+                diff / range
+            }
+            _ => 1.,
+        }
+    }
+
+    fn gen_axes(&self) -> Axes {
+        let series = self.series();
+        let mut vec_stick: Vec<Stick> = vec![];
+        // let interger_part = distance as u32;
+        // dbg!(interger_part);
+        let format = self.get_format();
+        let unit = self.get_unit();
+        // for index in 0..(series.len()) {
+        match unit.as_str() {
+            "year" => {
+                for index in 0..(series.len()) {
+                    let value = series[index];
+                    let stick = Stick::new(value.format(format).to_string(), self.scale(value));
+                    vec_stick.push(stick);
+                }
+            }
+            _ => (),
+        }
+
+        let sticks = vec_stick
+            .into_iter()
+            .filter(|stick| stick.value >= -0.0000001 && stick.value <= 1.0000001)
+            .collect::<Vec<_>>();
+
+        Axes {
+            sticks: sticks,
+            step: 1.,
         }
     }
 }

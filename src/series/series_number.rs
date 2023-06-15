@@ -7,18 +7,17 @@ use crate::{chart::*, coord::*, utils::cal_step::*, TAU};
 pub struct SNumber {
     series: Vec<f64>,
     is_float: bool,
-    origin: f64,
     stick: usize,
+    origin: f64,
 }
 
 impl SNumber {
     pub fn new(series: Vec<f64>) -> Self {
-        // let domain = min_max_vec(&series);
         SNumber {
             series,
             is_float: true,
-            origin: 0.,
             stick: 0,
+            origin: 0.,
         }
     }
 
@@ -26,35 +25,14 @@ impl SNumber {
         Self {
             series: self.series.clone(),
             is_float: self.is_float,
-            origin: self.origin,
             stick: stick,
-        }
-    }
-
-    pub fn set_origin(&self, origin: f64) -> Self {
-        Self {
-            series: self.series.clone(),
-            is_float: self.is_float,
-            origin,
-            stick: self.stick,
+            origin: self.origin,
         }
     }
 
     pub fn series(&self) -> Vec<f64> {
         self.series.clone()
     }
-
-    fn origin(&self) -> f64 {
-        self.origin
-    }
-
-    // fn is_float(&self) -> bool {
-    //     self.is_float
-    // }
-
-    // fn stick(&self) -> usize {
-    //     self.stick
-    // }
 }
 
 impl From<Vec<i64>> for SNumber {
@@ -63,12 +41,11 @@ impl From<Vec<i64>> for SNumber {
         for i in value {
             series.push(i as f64)
         }
-        // let domain = min_max_vec(&series);
         Self {
             series,
             is_float: false,
-            origin: 0.,
             stick: 0,
+            origin: 0.,
         }
     }
 }
@@ -79,12 +56,12 @@ impl From<Vec<u64>> for SNumber {
         for i in value {
             series.push(i as f64)
         }
-        // let domain = min_max_vec(&series);
+
         Self {
             series,
             is_float: false,
-            origin: 0.,
             stick: 0,
+            origin: 0.,
         }
     }
 }
@@ -92,7 +69,7 @@ impl From<Vec<u64>> for SNumber {
 impl ScaleNumber for SNumber {
     fn domain(&self) -> (f64, f64) {
         let mut all = self.series();
-        all.push(self.origin());
+        all.push(self.origin);
         min_max_vec(&all)
     }
 
@@ -146,27 +123,43 @@ impl ScaleNumber for SNumber {
     fn gen_axes(&self) -> Axes {
         let (distance_up, step, distance_down) = self.count_distance_step();
         let (_, precision) = count_precision(step.clone(), 0);
-        let mut vec_label: Vec<String> = vec![];
-        // For stick < 0
+        let mut vec_value: Vec<f64> = vec![];
+        let mut vec_stick: Vec<Stick> = vec![];
         for index in 1..(distance_down as i64 + 1) {
-            let label = format!("{:.prec$}", -index as f64 * step, prec = precision);
-            vec_label.push(label);
+            vec_value.push(-index as f64 * step);
         }
-        vec_label.reverse();
 
         for index in 0..(distance_up as i64 + 1) {
-            let label = format!("{:.prec$}", index as f64 * step, prec = precision);
-            vec_label.push(label);
+            vec_value.push(index as f64 * step);
         }
-        let mut vec_stick: Vec<Stick> = vec![];
 
-        for index in 0..vec_label.len() {
-            vec_stick.push(Stick::new(vec_label[index].clone(), index as f64));
+        vec_value.sort_by(|a, b| a.partial_cmp(b).unwrap());
+
+        dbg!(&vec_value);
+
+        for index in 0..(vec_value.len()) {
+            let value = vec_value[index];
+            let label = format!("{:.prec$}", value, prec = precision);
+            let stick = Stick::new(label, self.scale(value));
+            vec_stick.push(stick);
         }
+        let sticks = vec_stick
+            .into_iter()
+            .filter(|stick| stick.value >= -0.0000001 && stick.value <= 1.0000001)
+            .collect::<Vec<_>>();
+
         Axes {
-            sticks: vec_stick,
+            sticks: sticks,
             step: step,
         }
+    }
+
+    fn scale(&self, value: f64) -> f64 {
+        let (min, max) = self.domain();
+        let range = max - min;
+
+        let diff = value - min;
+        diff / range
     }
 }
 
