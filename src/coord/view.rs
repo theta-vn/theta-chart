@@ -23,7 +23,7 @@ pub struct CView {
     margin: f64,
 }
 impl CView {
-    pub fn new(width: u64, height: u64, position_axes: u64, padding: u64, margin: u64) -> Self {
+    pub fn new(width: u64, height: u64, position_axes: usize, padding: u64, margin: u64) -> Self {
         let padding = padding as f64;
         let margin = margin as f64;
         let vector = Vector::new(width as f64, height as f64);
@@ -32,7 +32,7 @@ impl CView {
         let mut width = width as f64 - 2. * margin;
         let mut height = height as f64 - 2. * margin;
 
-        let position_axes = position_axes as usize;
+        let position_axes = position_axes;
 
         // Top axes
         if get_bit_at(position_axes, 0) {
@@ -111,11 +111,11 @@ impl CView {
     }
 }
 
-impl From<Vec<u64>> for CView {
-    fn from(view: Vec<u64>) -> CView {
-        CView::new(view[0], view[1], view[2], view[3], view[4])
-    }
-}
+// impl From<Vec<u64>> for CView {
+//     fn from(view: Vec<u64>) -> CView {
+//         CView::new(view[0], view[1], view[2], view[3], view[4])
+//     }
+// }
 
 impl Draw for CView {
     fn get_origin(&self) -> Point {

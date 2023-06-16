@@ -33,6 +33,10 @@ impl SLabel {
     pub fn new(labels: Vec<String>, colors: Vec<Color>) -> Self {
         Self { labels, colors }
     }
+
+    pub fn labels(&self) -> Vec<String> {
+        self.labels.clone()
+    }
 }
 
 impl From<Vec<String>> for SLabel {
@@ -60,9 +64,7 @@ impl From<Vec<&str>> for SLabel {
 }
 
 impl ScaleLabel for SLabel {
-    // fn labels(&self) -> Vec<String> {
-    //     self.labels.clone()
-    // }
+    
 
     fn colors(&self) -> Vec<Color> {
         self.colors.clone()
