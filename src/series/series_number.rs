@@ -101,24 +101,24 @@ impl ScaleNumber for SNumber {
         self.series.clone().into_iter().map(|f| f / total).collect()
     }
 
-    fn gen_pie(&self, origin: Point, radius: f64) -> Vec<Arc> {
+    fn gen_pie(&self) -> Vec<Arc> {
         let series = self.series.clone();
         let total: f64 = series.iter().sum();
         let percent: Vec<f64> = series.clone().into_iter().map(|f| f / total).collect();
-        let mut vector_begin = Vector::new(0., radius);
+        let mut vector_begin = Vector::new(0., -1.);
         let mut vec_arc: Vec<Arc> = vec![];
         for p in percent {
-            let arc = Arc::new_polar(origin.clone(), vector_begin.clone(), p * TAU);
+            let arc = Arc::new_polar(Point::default(), vector_begin.clone(), p * TAU);
             vector_begin = arc.end.clone();
             vec_arc.push(arc);
         }
         vec_arc
     }
 
-    fn get_intervale(&self, len: f64) -> f64 {
-        let (distance_up, _step, distence_down) = self.count_distance_step();
-        len / ((distance_up + distence_down) as f64)
-    }
+    // fn get_intervale(&self, len: f64) -> f64 {
+    //     let (distance_up, _step, distence_down) = self.count_distance_step();
+    //     len / ((distance_up + distence_down) as f64)
+    // }
 
     fn gen_axes(&self) -> Axes {
         let (distance_up, step, distance_down) = self.count_distance_step();
@@ -161,6 +161,16 @@ impl ScaleNumber for SNumber {
         let diff = value - min;
         diff / range
     }
+
+    fn to_stick(&self) -> Vec<Stick> {
+        let mut vec_stick: Vec<Stick> = vec![];
+        let len = self.series().len();
+        for index in 0..len {
+            let stick = Stick::new(format!("{}", self.series()[index]), self.series()[index]);
+            vec_stick.push(stick);
+        }
+        vec_stick
+    }
 }
 
 fn count_precision(mut number: f64, mut count: usize) -> (f64, usize) {
@@ -171,11 +181,5 @@ fn count_precision(mut number: f64, mut count: usize) -> (f64, usize) {
         number *= 10.;
         count += 1;
         count_precision(number, count)
-    }
-}
-
-impl ScaleType for SNumber {
-    fn scale_type(&self) -> String {
-        "ScaleNumber".to_string()
     }
 }

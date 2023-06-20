@@ -168,10 +168,10 @@ impl ScaleTime for STime {
         }
     }
 
-    fn get_intervale(&self, len: f64) -> f64 {
-        let (distance, _step) = self.count_distance_step();
-        len / distance
-    }
+    // fn get_intervale(&self, len: f64) -> f64 {
+    //     let (distance, _step) = self.count_distance_step();
+    //     len / distance
+    // }
 
     fn scale_intervale(&self, value: NaiveDateTime) -> f64 {
         let (min, _max) = self.domain();
@@ -225,10 +225,8 @@ impl ScaleTime for STime {
             step: 1.,
         }
     }
-}
 
-impl ScaleType for STime {
-    fn scale_type(&self) -> String {
-        "ScaleTime".to_string()
+    fn to_stick(&self) -> Vec<Stick> {
+        vec![]
     }
 }

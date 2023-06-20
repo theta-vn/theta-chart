@@ -64,16 +64,14 @@ impl From<Vec<&str>> for SLabel {
 }
 
 impl ScaleLabel for SLabel {
-    
-
     fn colors(&self) -> Vec<Color> {
         self.colors.clone()
     }
 
-    fn get_intervale(&self, len: f64) -> f64 {
-        let distance = self.labels.len();
-        len / (distance as f64)
-    }
+    // fn get_intervale(&self, len: f64) -> f64 {
+    //     let distance = self.labels.len();
+    //     len / (distance as f64)
+    // }
 
     fn scale(&self, value: f64) -> f64 {
         let (min, max) = (0., self.labels.len() as f64);
@@ -98,10 +96,13 @@ impl ScaleLabel for SLabel {
             step: 1.,
         }
     }
-}
-
-impl ScaleType for SLabel {
-    fn scale_type(&self) -> String {
-        "ScaleLabel".to_string()
+    fn to_stick(&self) -> Vec<Stick> {
+        let mut vec_stick: Vec<Stick> = vec![];
+        let len = self.labels().len();
+        for index in 0..len {
+            let stick = Stick::new(format!("{}", self.labels()[index]), index as f64);
+            vec_stick.push(stick);
+        }
+        vec_stick
     }
 }
