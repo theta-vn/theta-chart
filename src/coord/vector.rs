@@ -30,6 +30,13 @@ impl Vector {
         self.0.y
     }
 
+    pub fn set_x(&self, x: f64) -> Self {
+        Self(Vector3::new(x, self.0.y, self.0.z))
+    }
+
+    pub fn set_y(&self, y: f64) -> Self {
+        Self(Vector3::new(self.0.x, y, self.0.z))
+    }
     pub fn to_point(&self) -> Point {
         let point = Point3D::from(self.get());
         Point::new(point.x, point.y)

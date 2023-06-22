@@ -45,20 +45,36 @@ impl Arc {
     }
 
     // TODO: cfg feature SVG
-    pub fn gen_path(&self) -> String {
-        let radius = self.begin.module();
+    pub fn gen_path(&self, radius: f64) -> String {
+        // let radius = self.begin.module();
         let (dx, dy) = self.delta_xy();
         format!(
-            "M{},{} l{},{} a{},{}  0 {},1 {},{} Z",
-            self.origin.get_x(),
-            self.origin.get_y(),
-            self.begin.get_x(),
-            self.begin.get_y(),
+            "M 0,0 l {},{} a{},{}  0 {},1 {},{} Z",
+            self.begin.get_x() * radius,
+            self.begin.get_y() * radius,
             radius,
             radius,
             self.large as i32,
-            dx,
-            dy
+            dx * radius,
+            dy * radius
         )
     }
+
+    // // TODO: cfg feature SVG
+    // pub fn gen_path(&self, radius: f64) -> String {
+    //     // let radius = self.begin.module();
+    //     let (dx, dy) = self.delta_xy();
+    //     format!(
+    //         "M{},{} l{},{} a{},{}  0 {},1 {},{} Z",
+    //         self.origin.get_x(),
+    //         self.origin.get_y(),
+    //         self.begin.get_x(),
+    //         self.begin.get_y(),
+    //         radius,
+    //         radius,
+    //         self.large as i32,
+    //         dx,
+    //         dy
+    //     )
+    // }
 }

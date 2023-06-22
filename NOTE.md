@@ -11,5 +11,7 @@ cargo test --test data -- --show-output
              |           |              
 `cargo test new --test scale -- --show-output`
 
+
+`cargo test --test series_test -- time::scale_time --show-output`
 # Doc
 cargo doc --open --no-deps

@@ -1,4 +1,8 @@
-use crate::{chart::*, color::Color};
+use crate::{
+    chart::*,
+    color::Color,
+    coord::{Axes, Stick},
+};
 
 // use super::ScaleLabel;
 
@@ -29,6 +33,10 @@ impl SLabel {
     pub fn new(labels: Vec<String>, colors: Vec<Color>) -> Self {
         Self { labels, colors }
     }
+
+    pub fn labels(&self) -> Vec<String> {
+        self.labels.clone()
+    }
 }
 
 impl From<Vec<String>> for SLabel {
@@ -56,17 +64,45 @@ impl From<Vec<&str>> for SLabel {
 }
 
 impl ScaleLabel for SLabel {
-    fn labels(&self) -> Vec<String> {
-        self.labels.clone()
-    }
-
     fn colors(&self) -> Vec<Color> {
         self.colors.clone()
     }
-}
 
-impl ScaleType for SLabel {
-    fn scale_type(&self) -> String {
-        "ScaleLabel".to_string()
+    // fn get_intervale(&self, len: f64) -> f64 {
+    //     let distance = self.labels.len();
+    //     len / (distance as f64)
+    // }
+
+    fn scale(&self, value: f64) -> f64 {
+        let (min, max) = (0., self.labels.len() as f64);
+        let range = max - min;
+
+        let diff = value - min;
+        diff / range
+    }
+
+    fn gen_axes(&self) -> Axes {
+        let distance = self.labels.len();
+        let series = &self.labels;
+        let mut vec_stick: Vec<Stick> = vec![];
+        // For stick < 0
+        for index in 0..(distance) {
+            let stick = Stick::new(format!("{}", series[index]), self.scale(index as f64 + 0.5));
+            vec_stick.push(stick);
+        }
+
+        Axes {
+            sticks: vec_stick,
+            step: 1.,
+        }
+    }
+    fn to_stick(&self) -> Vec<Stick> {
+        let mut vec_stick: Vec<Stick> = vec![];
+        let len = self.labels().len();
+        for index in 0..len {
+            let stick = Stick::new(format!("{}", self.labels()[index]), index as f64);
+            vec_stick.push(stick);
+        }
+        vec_stick
     }
 }

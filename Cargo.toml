@@ -1,6 +1,6 @@
 [package]
 name = "theta-chart"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2021"
 authors = ["LangPham"]
 license = "MIT"
@@ -12,3 +12,4 @@ readme = "./README.md"
 palette = "0.7.2"
 nalgebra = "0.32.2"
 approx = "0.5.1"
+chrono = "0.4.26"
