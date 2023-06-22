@@ -3,4 +3,4 @@
 
 # Examples and Usage
 
-[leptos_chart](https://github.com/theta-vn/leptos_chart)
+Read more: [leptos_chart](https://github.com/theta-vn/leptos_chart)
