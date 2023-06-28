@@ -4,7 +4,7 @@ use crate::{
 };
 
 use super::Circle;
-const RADIUS: f64 = 0.95;
+const RADIUS: f64 = 0.9;
 
 #[derive(Debug, Clone, Default)]
 

@@ -123,6 +123,11 @@ impl ScaleNumber for SNumber {
         self.series.clone().into_iter().map(|f| f / total).collect()
     }
 
+    fn to_percent_radar(&self) -> Vec<f64> {
+        let total = 100.;
+        self.series.clone().into_iter().map(|f| f / total).collect()
+    }
+
     fn gen_pie(&self) -> Vec<Arc> {
         let series = self.series.clone();
         let total: f64 = series.iter().sum();
@@ -135,6 +140,17 @@ impl ScaleNumber for SNumber {
             vec_arc.push(arc);
         }
         vec_arc
+    }
+
+    fn gen_radar_grid(&self, count: usize) -> Vec<Vector> {
+        let mut vector_begin = Vector::new(0., -1.);
+        let mut vectors: Vec<Vector> = vec![];
+        vectors.push(vector_begin);
+        for index in 1..count {
+            vector_begin = vectors[index - 1].clone();
+            vectors.push(vector_begin.az_rotate_tau(TAU / count as f64));
+        }
+        vectors
     }
 
     // fn get_intervale(&self, len: f64) -> f64 {
