@@ -24,6 +24,14 @@ impl From<Vec<f64>> for Series {
     }
 }
 
+// For Number
+impl From<Vec<i64>> for Series {
+    fn from(value: Vec<i64>) -> Self {
+        let n = SNumber::from(value);
+        Self::Number(n)
+    }
+}
+
 // For Label
 impl From<Vec<&str>> for Series {
     fn from(value: Vec<&str>) -> Self {
@@ -62,6 +70,14 @@ impl Series {
             Series::Number(s) => s.scale(value),
             Series::Label(l) => l.scale(value),
             Series::Time(_t) => 1.,
+        }
+    }
+
+    pub fn set_range(&self, min: f64, max: f64) -> Self {
+        match self {
+            Series::Number(s) => Series::Number(s.set_range(min, max)),
+            Series::Label(l) => Series::Label(l.clone()),
+            Series::Time(t) => Series::Time(t.clone()),
         }
     }
 }

@@ -9,6 +9,8 @@ pub struct SNumber {
     is_float: bool,
     stick: usize,
     origin: f64,
+    // For range of axis
+    range: Option<(f64, f64)>,
 }
 
 impl SNumber {
@@ -18,6 +20,7 @@ impl SNumber {
             is_float: true,
             stick: 0,
             origin: 0.,
+            range: None,
         }
     }
 
@@ -27,11 +30,22 @@ impl SNumber {
             is_float: self.is_float,
             stick: stick,
             origin: self.origin,
+            range: self.range,
         }
     }
 
     pub fn series(&self) -> Vec<f64> {
         self.series.clone()
+    }
+
+    pub fn set_range(&self, min: f64, max: f64) -> Self {
+        Self {
+            series: self.series.clone(),
+            is_float: self.is_float,
+            stick: self.stick,
+            origin: self.origin,
+            range: Some((min, max)),
+        }
     }
 }
 
@@ -46,6 +60,7 @@ impl From<Vec<i64>> for SNumber {
             is_float: false,
             stick: 0,
             origin: 0.,
+            range: None,
         }
     }
 }
@@ -62,6 +77,7 @@ impl From<Vec<u64>> for SNumber {
             is_float: false,
             stick: 0,
             origin: 0.,
+            range: None,
         }
     }
 }
@@ -69,7 +85,13 @@ impl From<Vec<u64>> for SNumber {
 impl ScaleNumber for SNumber {
     fn domain(&self) -> (f64, f64) {
         let mut all = self.series();
-        all.push(self.origin);
+        if let Some(range) = self.range {
+            all.push(range.0);
+            all.push(range.1);
+        } else {
+            all.push(self.origin);
+        }
+
         min_max_vec(&all)
     }
 
@@ -134,8 +156,6 @@ impl ScaleNumber for SNumber {
         }
 
         vec_value.sort_by(|a, b| a.partial_cmp(b).unwrap());
-
-        dbg!(&vec_value);
 
         for index in 0..(vec_value.len()) {
             let value = vec_value[index];
