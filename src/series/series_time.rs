@@ -125,6 +125,7 @@ fn ndt_parse_from_str(str: &str, format: &str, get: &str) -> Result<NaiveDateTim
         "full" => NaiveDateTime::parse_from_str(str, format),
         "date" => {
             let date = NaiveDate::parse_from_str(str, format);
+
             match date {
                 Ok(d) => {
                     let time = NaiveTime::default();
@@ -202,19 +203,23 @@ impl ScaleTime for STime {
     }
 
     fn gen_axes(&self) -> Axes {
-        let series = self.series();
         let mut vec_stick: Vec<Stick> = vec![];
-        let format = self.get_format();
         let unit = self.get_unit();
+        let (min, max) = self.domain_unix();
+        let mut step = (max - min) / 5.;
+        step = CalStep::new(step).cal_scale();
 
-        let domain = self.domain_unix();
-        dbg!(domain);
+        let first_stick = (min / step).ceil() * step;
+        let last_stick = (max / step).floor() * step;
+        dbg!(first_stick, last_stick);
 
         match unit.as_str() {
             "year" => {
-                for index in 0..(series.len()) {
-                    let value = series[index];
-                    let stick = Stick::new(value.format(format).to_string(), self.scale(value));
+                for value in ((first_stick as i64)..(last_stick as i64 + 1)).step_by(step as usize)
+                {
+                    let string_value = value.to_string();
+                    let nv = ndt_parse_from_str(string_value.as_str(), "%Y", "year").unwrap();
+                    let stick = Stick::new(value.to_string(), self.scale(nv));
                     vec_stick.push(stick);
                 }
             }
@@ -233,16 +238,16 @@ impl ScaleTime for STime {
     }
 
     fn to_stick(&self) -> Vec<Stick> {
-        let axes = self.gen_axes();
-        // let mut vec_stick: Vec<Stick> = vec![];
+        let mut vec_stick: Vec<Stick> = vec![];
 
-        // let len = self.series().len();
-        // for index in 0..len {
-        //     let value = self.get_value(index);
-        //     let stick = Stick::new(format!("{}", value), value);
-        //     vec_stick.push(stick);
-        // }
-        // vec_stick
-        axes.sticks
+        let len = self.series().len();
+        for index in 0..len {
+            let value = self.get_value(index);
+            let string_value = value.to_string();
+            let nv = ndt_parse_from_str(string_value.as_str(), "%Y", "year").unwrap();
+            let stick = Stick::new(format!("{}", value), self.scale(nv));
+            vec_stick.push(stick);
+        }
+        vec_stick
     }
 }

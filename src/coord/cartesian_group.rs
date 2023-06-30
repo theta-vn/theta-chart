@@ -4,7 +4,7 @@ use crate::series::Series;
 #[derive(Debug, Clone)]
 /// Store data for descartes coordinates system
 pub struct CartesianGroup {
-    data: Vec<(Series, Series)>,    
+    data: Vec<(Series, Series)>,
     view: CView,
 }
 
@@ -25,7 +25,6 @@ impl CartesianGroup {
             view: self.view.clone(),
         }
     }
-
 
     pub fn set_view(
         &self,
@@ -64,10 +63,10 @@ impl CartesianGroup {
                         Series::Number(o) => fix = fix.merge(o.clone()),
                         Series::Label(_) => (),
                         Series::Time(_) => (),
-                    }                    
-                };
+                    }
+                }
                 return Series::Number(fix);
-            },
+            }
             Series::Label(_) => first.clone(),
             Series::Time(s) => {
                 let mut fix = s.clone();
@@ -76,15 +75,12 @@ impl CartesianGroup {
                         Series::Number(_) => (),
                         Series::Label(_) => (),
                         Series::Time(o) => fix = fix.merge(o.clone()),
-                    }                    
-                };
+                    }
+                }
                 return Series::Time(fix);
-            },
+            }
         }
-       
-    }    
-
-
+    }
 
     pub fn get_ay_group(&self) -> Series {
         let first = &self.data[0].1;
@@ -96,10 +92,10 @@ impl CartesianGroup {
                         Series::Number(o) => fix = fix.merge(o.clone()),
                         Series::Label(_) => (),
                         Series::Time(_) => (),
-                    }                    
-                };
+                    }
+                }
                 return Series::Number(fix);
-            },
+            }
             Series::Label(_) => first.clone(),
             Series::Time(s) => {
                 let mut fix = s.clone();
@@ -108,13 +104,12 @@ impl CartesianGroup {
                         Series::Number(_) => (),
                         Series::Label(_) => (),
                         Series::Time(o) => fix = fix.merge(o.clone()),
-                    }                    
-                };
+                    }
+                }
                 return Series::Time(fix);
-            },
+            }
         }
-       
-    }    
+    }
 
     pub fn get_data(&self) -> Vec<(Series, Series)> {
         self.data.clone()

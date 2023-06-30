@@ -55,5 +55,6 @@ fn year() {
     // let vec_string = stime.gen_sticks_label_step();
     // dbg!(vec_string);
 
-    dbg!(stime.gen_axes());
+    let axes = stime.gen_axes();
+    dbg!(axes);
 }

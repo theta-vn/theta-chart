@@ -1,6 +1,7 @@
 mod arc;
 mod axes;
 mod cartesian;
+mod cartesian_group;
 mod circle;
 mod cview;
 mod line;
@@ -10,11 +11,11 @@ mod pview;
 mod reg;
 mod stick;
 mod vector;
-mod cartesian_group;
 
 pub use self::arc::Arc;
 pub use self::axes::Axes;
 pub use self::cartesian::Cartesian;
+pub use self::cartesian_group::CartesianGroup;
 pub use self::circle::Circle;
 pub use self::cview::CView;
 pub use self::line::Line;
@@ -24,4 +25,3 @@ pub use self::pview::PView;
 pub use self::reg::Rec;
 pub use self::stick::Stick;
 pub use self::vector::Vector;
-pub use self::cartesian_group::CartesianGroup;

@@ -39,7 +39,7 @@ impl SNumber {
     }
 
     pub fn merge(&self, other: SNumber) -> Self {
-        let mut series =  self.series.clone();
+        let mut series = self.series.clone();
         series.extend(other.series);
         Self {
             series,
