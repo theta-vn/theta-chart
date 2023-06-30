@@ -137,6 +137,10 @@ fn ndt_parse_from_str(str: &str, format: &str, get: &str) -> Result<NaiveDateTim
         "year" => {
             let year = format!("{}-01-01", str);
             ndt_parse_from_str(year.as_str(), "%Y-%m-%d", "date")
+        },
+        "month" => {
+            let month = format!("{}-01", str);
+            ndt_parse_from_str(&month.as_str(), "%Y-%m-%d", "date")
         }
 
         _ => NaiveDateTime::parse_from_str(str, format),
@@ -159,6 +163,11 @@ impl ScaleTime for STime {
         let (min, max) = self.domain();
         match self.unit.as_str() {
             "year" => (min.year() as f64, max.year() as f64),
+            "month" => {
+                let min = min.year() as f64  * 12. + min.month0() as f64;
+                let max = max.year() as f64  * 12. + max.month0() as f64;
+                (min, max)
+            },
             _ => (0., 0.),
         }
     }
@@ -197,6 +206,13 @@ impl ScaleTime for STime {
 
                 let diff = value.year() as f64 - min;
                 diff / range
+            },
+            "month" => {
+                let (min, max) = self.domain_unix();
+                let range = max - min;
+
+                let diff = value.year() as f64 * 12. + value.month() as f64 - min;
+                diff / range
             }
             _ => 1.,
         }
@@ -205,21 +221,39 @@ impl ScaleTime for STime {
     fn gen_axes(&self) -> Axes {
         let mut vec_stick: Vec<Stick> = vec![];
         let unit = self.get_unit();
+        dbg!(&unit);
         let (min, max) = self.domain_unix();
-        let mut step = (max - min) / 5.;
-        step = CalStep::new(step).cal_scale();
+        dbg!(&min, &max);
 
-        let first_stick = (min / step).ceil() * step;
-        let last_stick = (max / step).floor() * step;
-        dbg!(first_stick, last_stick);
 
         match unit.as_str() {
             "year" => {
+                let mut step = (max - min) / 5.;
+                step = CalStep::new(step).cal_scale();
+
+                let first_stick = (min / step).ceil() * step;
+                let last_stick = (max / step).floor() * step;
                 for value in ((first_stick as i64)..(last_stick as i64 + 1)).step_by(step as usize)
                 {
                     let string_value = value.to_string();
                     let nv = ndt_parse_from_str(string_value.as_str(), "%Y", "year").unwrap();
                     let stick = Stick::new(value.to_string(), self.scale(nv));
+                    vec_stick.push(stick);
+                }
+            },
+            "month" => {
+                dbg!("RUN HERE=============");
+                let mut step = 0.;                
+                step = cal_scale_time(max-min, "month");
+                dbg!(step);
+                let first_stick = (min / step).ceil() * step / 12.;
+                let last_stick = (max / step).floor() * step / 12.;
+                dbg!(first_stick, last_stick);
+                for value in ((first_stick as i64)..(last_stick as i64 + 1)).step_by((step / 12.) as usize)
+                {
+                    let string_value = value.to_string();
+                    let nv = ndt_parse_from_str(string_value.as_str(), "%Y", "year").unwrap();
+                    let stick = Stick::new(nv.format("%Y-%m").to_string(), self.scale(nv));
                     vec_stick.push(stick);
                 }
             }
@@ -232,7 +266,7 @@ impl ScaleTime for STime {
             .collect::<Vec<_>>();
 
         Axes {
-            sticks: sticks,
+            sticks,
             step: 1.,
         }
     }
@@ -249,5 +283,23 @@ impl ScaleTime for STime {
             vec_stick.push(stick);
         }
         vec_stick
+    }
+}
+
+
+fn cal_scale_time(num: f64, unit: &str) -> f64 {
+    let num = num / 5.;
+    match unit {
+        "month" => {
+            dbg!(num /12.);
+            if num / 12. >= 3. {
+                // dbg!(CalStep::new(num/12.).cal_scale());
+                return CalStep::new(num/12.).cal_scale() *12.;
+            } else {                
+                return CalStep::new(num/12.).cal_scale();
+            }
+            
+        },
+        _ => num
     }
 }

@@ -41,20 +41,17 @@ fn new_series_time() {
 
 #[test]
 fn year() {
-    let stime = STime::from((vec!["1982", "1986", "2017", "2020"], "%Y", "year"));
-    // dbg!(&stime);
-    let domain = stime.domain();
-    // dbg!(&domain);
-
-    // let distance = stime.count_distance_step();
-    // // dbg!(&distance);
-
-    // let intervale = stime.get_intervale(800.);
-    // // dbg!(&intervale);
-
-    // let vec_string = stime.gen_sticks_label_step();
-    // dbg!(vec_string);
-
+    let stime = STime::from((vec!["1982", "1986", "2017", "2020"], "%Y", "year"));    
     let axes = stime.gen_axes();
     dbg!(axes);
 }
+
+#[test]
+fn month() {
+    let stime = STime::from((vec!["1982-04", "1986-02", "2017-02", "2020-05"], "%Y-%m", "month"));
+    dbg!(&stime);
+    let axes = stime.gen_axes();
+    dbg!(axes);
+}
+
+
