@@ -10,6 +10,7 @@ mod pview;
 mod reg;
 mod stick;
 mod vector;
+mod cartesian_group;
 
 pub use self::arc::Arc;
 pub use self::axes::Axes;
@@ -23,3 +24,4 @@ pub use self::pview::PView;
 pub use self::reg::Rec;
 pub use self::stick::Stick;
 pub use self::vector::Vector;
+pub use self::cartesian_group::CartesianGroup;

@@ -40,11 +40,11 @@ fn new_series_time() {
 }
 
 #[test]
-fn scale() {
+fn year() {
     let stime = STime::from((vec!["1982", "1986", "2017", "2020"], "%Y", "year"));
-    dbg!(&stime);
+    // dbg!(&stime);
     let domain = stime.domain();
-    dbg!(&domain);
+    // dbg!(&domain);
 
     // let distance = stime.count_distance_step();
     // // dbg!(&distance);

@@ -1,7 +1,7 @@
 use theta_chart::{coord::*, series::*};
 
 #[test]
-fn c1artersian_create_ll() {
+fn cartersian_create_ll() {
     // let linear = SNumber::new(vec![1.0, 2.0]);
     let category = SLabel::from(vec!["A", "B"]);
     // let view = CView::new(800, 600, 0b1100, 30, 10);
@@ -35,3 +35,34 @@ fn c1artersian_create_ll() {
     // let hex_color = colors[0].to_string_hex();
     // dbg!(&hex_color);
 }
+
+#[test]
+fn cartersian_group_create_nn() {
+    let chart = CartesianGroup::new()
+        .add_data(
+            Series::from(vec![0., 1.0, 2., 3., 4.]),
+            Series::from(vec![3.0, 1.0, 5., 8., 7.]),
+        )
+        .add_data(
+            Series::from(vec![0., 1.0, 2., 3., 4.]),
+            Series::from(vec![9.0, 2.0, 5., 4., 7.]),
+        )
+        .set_view(820, 620, 3, 100, 100, 20);
+    
+    dbg!(&chart);
+}
+
+#[test]
+fn cartersian_group_create_nt() {
+    let st = STime::from((vec!["1982", "1986", "2017", "2020"], "%Y", "year"));
+    let chart = CartesianGroup::new()
+        .add_data(
+            Series::from(vec![0., 1.0, 2., 3.]),
+            Series::Time(st)
+        )        
+        .set_view(820, 620, 3, 100, 100, 20);
+    
+    dbg!(&chart);
+    
+}
+

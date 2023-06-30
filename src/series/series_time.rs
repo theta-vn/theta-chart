@@ -84,6 +84,17 @@ impl STime {
             _ => 1.,
         }
     }
+
+    pub fn merge(&self, other: STime) -> Self {
+        let mut series = self.series.clone();
+        series.extend(&other.series);
+        Self {
+            series: series.clone(),
+            format: self.format.clone(),
+            dirty: self.dirty,
+            unit: self.unit.clone(),
+        }
+    }
 }
 
 impl From<(Vec<&str>, &str, &str)> for STime {
@@ -156,10 +167,9 @@ impl ScaleTime for STime {
             "year" => {
                 let (min, max) = self.domain_unix();
                 let dur = max - min;
-                dbg!(&dur);
+
                 let mut step = dur as f64 / 5.;
                 step = CalStep::new(step.ceil()).cal_scale();
-                dbg!(step);
 
                 (dur as f64 / step, step)
             }
@@ -167,11 +177,6 @@ impl ScaleTime for STime {
             _ => (1., 0.),
         }
     }
-
-    // fn get_intervale(&self, len: f64) -> f64 {
-    //     let (distance, _step) = self.count_distance_step();
-    //     len / distance
-    // }
 
     fn scale_intervale(&self, value: NaiveDateTime) -> f64 {
         let (min, _max) = self.domain();
@@ -199,11 +204,12 @@ impl ScaleTime for STime {
     fn gen_axes(&self) -> Axes {
         let series = self.series();
         let mut vec_stick: Vec<Stick> = vec![];
-        // let interger_part = distance as u32;
-        // dbg!(interger_part);
         let format = self.get_format();
         let unit = self.get_unit();
-        // for index in 0..(series.len()) {
+
+        let domain = self.domain_unix();
+        dbg!(domain);
+
         match unit.as_str() {
             "year" => {
                 for index in 0..(series.len()) {
@@ -227,6 +233,16 @@ impl ScaleTime for STime {
     }
 
     fn to_stick(&self) -> Vec<Stick> {
-        vec![]
+        let axes = self.gen_axes();
+        // let mut vec_stick: Vec<Stick> = vec![];
+
+        // let len = self.series().len();
+        // for index in 0..len {
+        //     let value = self.get_value(index);
+        //     let stick = Stick::new(format!("{}", value), value);
+        //     vec_stick.push(stick);
+        // }
+        // vec_stick
+        axes.sticks
     }
 }
