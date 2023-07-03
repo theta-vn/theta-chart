@@ -38,6 +38,18 @@ impl SNumber {
         self.series.clone()
     }
 
+    pub fn merge(&self, other: SNumber) -> Self {
+        let mut series = self.series.clone();
+        series.extend(other.series);
+        Self {
+            series,
+            is_float: self.is_float,
+            stick: self.stick,
+            origin: self.origin,
+            range: self.range,
+        }
+    }
+
     pub fn set_range(&self, min: f64, max: f64) -> Self {
         Self {
             series: self.series.clone(),
@@ -153,12 +165,8 @@ impl ScaleNumber for SNumber {
         vectors
     }
 
-    // fn get_intervale(&self, len: f64) -> f64 {
-    //     let (distance_up, _step, distence_down) = self.count_distance_step();
-    //     len / ((distance_up + distence_down) as f64)
-    // }
-
     fn gen_axes(&self) -> Axes {
+        let style = "number".to_string();
         let (distance_up, step, distance_down) = self.count_distance_step();
         let (_, precision) = count_precision(step.clone(), 0);
         let mut vec_value: Vec<f64> = vec![];
@@ -187,6 +195,7 @@ impl ScaleNumber for SNumber {
         Axes {
             sticks: sticks,
             step: step,
+            style,
         }
     }
 

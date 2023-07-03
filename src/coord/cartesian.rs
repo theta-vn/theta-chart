@@ -7,31 +7,60 @@ pub struct Cartesian {
     ax: Series,
     ay: Series,
     view: CView,
+    error: String,
 }
 
 impl Cartesian {
     pub fn new(ax: Series, ay: Series) -> Self {
+        let len_ax = ax.get_count();
+        let len_ay = ay.get_count();
+        let mut err = String::default();
+
+        if len_ax != len_ay {
+            err = "The lengths of the series are not equal".to_string()
+        }
+
         Self {
             ax,
             ay,
             view: CView::default(),
+            error: err,
         }
     }
 
     pub fn set_ax(self, ax: Series) -> Self {
+        let len_ax = ax.get_count();
+        let len_ay = self.ay.get_count();
+        let mut err = String::default();
+        if len_ax != len_ay {
+            err = "The lengths of the series are not equal".to_string();
+        }
         Self {
             ax: ax,
             ay: self.ay.clone(),
             view: self.view.clone(),
+            error: err,
         }
     }
 
     pub fn set_ay(&self, ay: Series) -> Self {
+        let len_ax = self.ax.get_count();
+        let len_ay = ay.get_count();
+        let mut err = String::default();
+        if len_ax != len_ay {
+            err = "The lengths of the series are not equal".to_string();
+        }
+
         Self {
             ax: self.ax.clone(),
             ay: ay,
             view: self.view.clone(),
+            error: err,
         }
+    }
+
+    pub fn get_error(&self) -> String {
+        self.error.clone()
     }
 
     pub fn set_view(
@@ -55,6 +84,7 @@ impl Cartesian {
             ax: self.ax.clone(),
             ay: self.ay.clone(),
             view: view,
+            error: self.error.clone(),
         }
     }
 

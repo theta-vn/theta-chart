@@ -42,9 +42,9 @@ pub trait ScaleTime {
     fn domain_unix(&self) -> (f64, f64);
     fn scale(&self, value: NaiveDateTime) -> f64;
     // fn domain_unit(&self) -> (NaiveDateTime, NaiveDateTime);
-    fn count_distance_step(&self) -> (f64, f64);
+    // fn count_distance_step(&self) -> (f64, f64);
     // fn get_intervale(&self, len: f64) -> f64;
-    fn scale_intervale(&self, value: NaiveDateTime) -> f64;
+    // fn scale_intervale(&self, value: NaiveDateTime) -> f64;
     fn gen_axes(&self) -> Axes;
     // To stick for series
     fn to_stick(&self) -> Vec<Stick>;
