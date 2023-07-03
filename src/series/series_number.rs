@@ -166,6 +166,7 @@ impl ScaleNumber for SNumber {
     }
 
     fn gen_axes(&self) -> Axes {
+        let style = "number".to_string();
         let (distance_up, step, distance_down) = self.count_distance_step();
         let (_, precision) = count_precision(step.clone(), 0);
         let mut vec_value: Vec<f64> = vec![];
@@ -194,6 +195,7 @@ impl ScaleNumber for SNumber {
         Axes {
             sticks: sticks,
             step: step,
+            style,
         }
     }
 

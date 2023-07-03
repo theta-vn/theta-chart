@@ -82,6 +82,7 @@ impl ScaleLabel for SLabel {
     }
 
     fn gen_axes(&self) -> Axes {
+        let style = "number".to_string();
         let distance = self.labels.len();
         let series = &self.labels;
         let mut vec_stick: Vec<Stick> = vec![];
@@ -94,6 +95,7 @@ impl ScaleLabel for SLabel {
         Axes {
             sticks: vec_stick,
             step: 1.,
+            style,
         }
     }
     fn to_stick(&self) -> Vec<Stick> {
