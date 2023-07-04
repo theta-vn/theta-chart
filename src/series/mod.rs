@@ -1,12 +1,9 @@
 mod series_number;
+pub use self::series_number::SNumber;
 use crate::chart::{ScaleLabel, ScaleNumber, ScaleTime};
 use crate::coord::{Axes, Stick};
-
-pub use self::series_number::SNumber;
-
 mod series_label;
 pub use self::series_label::SLabel;
-
 mod series_time;
 pub use self::series_time::STime;
 
@@ -40,6 +37,14 @@ impl From<Vec<&str>> for Series {
     }
 }
 
+// For Time
+impl From<(Vec<&str>, &str, &str)> for Series {
+    fn from(value: (Vec<&str>, &str, &str)) -> Self {
+        let st = STime::from(value);
+        Self::Time(st)
+    }
+}
+
 impl Series {
     pub fn gen_axes(&self) -> Axes {
         match self {
@@ -69,7 +74,15 @@ impl Series {
         match self {
             Series::Number(s) => s.scale(value),
             Series::Label(l) => l.scale(value),
-            Series::Time(_t) => 1.,
+            Series::Time(_t) => 1. * value,
+        }
+    }
+
+    pub fn scale_index(&self, label: String) -> usize {
+        match self {
+            Series::Number(_s) => 1,
+            Series::Label(l) => l.scale_index(label),
+            Series::Time(_t) => 1,
         }
     }
 
@@ -80,4 +93,20 @@ impl Series {
             Series::Time(t) => Series::Time(t.clone()),
         }
     }
+
+    pub fn series_stick(&self) -> Vec<Stick> {
+        match self {
+            Series::Number(s) => s.to_stick(),
+            Series::Label(_l) => vec![],
+            Series::Time(t) => t.to_stick(),
+        }
+    }
+
+    // pub fn series(&self) -> Vec {
+    //     match self {
+    //         Series::Number(s) => s.series(),
+    //         Series::Label(_l) => vec![],
+    //         Series::Time(t) => t.to_stick(),
+    //     }
+    // }
 }

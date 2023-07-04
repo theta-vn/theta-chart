@@ -1,4 +1,7 @@
-use theta_chart::{chart::ScaleTime, series::STime};
+use theta_chart::{
+    chart::ScaleTime,
+    series::{STime, Series},
+};
 
 use chrono::{NaiveDate, NaiveDateTime, NaiveTime};
 
@@ -40,20 +43,25 @@ fn new_series_time() {
 }
 
 #[test]
-fn scale() {
+fn year() {
     let stime = STime::from((vec!["1982", "1986", "2017", "2020"], "%Y", "year"));
+    let axes = stime.gen_axes();
+    dbg!(axes);
+}
+
+#[test]
+fn month() {
+    // let stime = STime::from((vec!["1982-04", "1986-02", "2017-02", "2020-05"], "%Y-%m", "month"));
+    let stime = STime::from((
+        vec!["1982-04", "1982-09", "1983-02", "1983-04"],
+        "%Y-%m",
+        "month",
+    ));
     dbg!(&stime);
-    let domain = stime.domain();
-    dbg!(&domain);
-
-    // let distance = stime.count_distance_step();
-    // // dbg!(&distance);
-
-    // let intervale = stime.get_intervale(800.);
-    // // dbg!(&intervale);
-
-    // let vec_string = stime.gen_sticks_label_step();
-    // dbg!(vec_string);
-
-    dbg!(stime.gen_axes());
+    let axes = stime.gen_axes();
+    dbg!(axes);
+    let series = Series::Time(stime);
+    dbg!(&series);
+    let stick = series.to_stick();
+    dbg!(&stick);
 }
