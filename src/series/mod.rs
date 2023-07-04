@@ -78,6 +78,14 @@ impl Series {
         }
     }
 
+    pub fn scale_index(&self, label: String) -> usize {
+        match self {
+            Series::Number(_s) => 1,
+            Series::Label(l) => l.scale_index(label),
+            Series::Time(_t) => 1,
+        }
+    }
+
     pub fn set_range(&self, min: f64, max: f64) -> Self {
         match self {
             Series::Number(s) => Series::Number(s.set_range(min, max)),

@@ -67,7 +67,17 @@ impl CartesianGroup {
                 }
                 return Series::Number(fix);
             }
-            Series::Label(_) => first.clone(),
+            Series::Label(l) => {
+                let mut fix = l.clone();
+                for index in 1..self.data.len() {
+                    match &self.data[index].0 {
+                        Series::Number(_) => (),
+                        Series::Label(l) => fix = fix.merge(l.clone()),
+                        Series::Time(_) => (),
+                    }
+                }
+                return Series::Label(fix);
+            }
             Series::Time(s) => {
                 let mut fix = s.clone();
                 for index in 1..self.data.len() {
@@ -96,7 +106,17 @@ impl CartesianGroup {
                 }
                 return Series::Number(fix);
             }
-            Series::Label(_) => first.clone(),
+            Series::Label(l) => {
+                let mut fix = l.clone();
+                for index in 1..self.data.len() {
+                    match &self.data[index].1 {
+                        Series::Number(_) => (),
+                        Series::Label(l) => fix = fix.merge(l.clone()),
+                        Series::Time(_) => (),
+                    }
+                }
+                return Series::Label(fix);
+            }
             Series::Time(s) => {
                 let mut fix = s.clone();
                 for index in 1..self.data.len() {

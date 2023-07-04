@@ -10,6 +10,7 @@ pub trait ScaleLabel {
     // fn labels(&self) -> Vec<String>;
     fn colors(&self) -> Vec<Color>;
     fn scale(&self, value: f64) -> f64;
+    fn scale_index(&self, label: String) -> usize;
     // fn get_intervale(&self, len: f64) -> f64;
     // fn gen_sticks_label_step(&self) -> (Vec<String>, f64);
     fn gen_axes(&self) -> Axes;
