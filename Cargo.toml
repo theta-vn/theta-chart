@@ -1,6 +1,6 @@
 [package]
 name = "theta-chart"
-version = "0.0.5"
+version = "0.0.6"
 edition = "2021"
 authors = ["LangPham"]
 license = "MIT"
@@ -9,7 +9,7 @@ description = "Theta_chart is a collection of utilities to make performing certa
 readme = "./README.md"
 
 [dependencies]
-palette = "0.7.2"
-nalgebra = "0.32.2"
-approx = "0.5.1"
-chrono = "0.4.26"
+palette = "0.7"
+nalgebra = "0.32"
+approx = "0.5"
+chrono = { version = "0.4", default-features = false, features = ["alloc"] }
