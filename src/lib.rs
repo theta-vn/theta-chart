@@ -1,5 +1,6 @@
 mod utils;
 pub use self::utils::common::*;
+pub use self::utils::delaunator;
 
 /// Color definition and processing module.
 pub mod color;
