@@ -59,3 +59,14 @@ fn cartersian_group_create_ln() {
 
     dbg!(&series_y_group);
 }
+
+
+#[test]
+fn polar_create_pie() {
+    let polar = Polar::new(
+        Series::from(vec![1.0, 2.0, 5.]),
+        Series::from(vec!["A", "B", "C"]),
+    );
+    dbg!(polar);
+    
+}

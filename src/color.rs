@@ -33,4 +33,10 @@ impl Color {
         let lch_color: Lch = self.0.into_color();
         Color(Srgb::from_color(lch_color.shift_hue(SHIFT_HUE)))
     }
+
+    pub fn shift_hue_degrees_index(&self, degrees: f32, index: usize) -> Color {
+        let lch_color: Lch = self.0.into_color();
+        let degrees = degrees * index as f32;
+        Color(Srgb::from_color(lch_color.shift_hue(degrees)))
+    }
 }

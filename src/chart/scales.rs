@@ -1,20 +1,13 @@
 use chrono::NaiveDateTime;
 
-use crate::{
-    color::Color,
-    coord::{Arc, Axes, Stick, Vector},
-};
+use crate::coord::{Arc, Axes, Stick, Vector};
 
 /// This trait allows to create a label axes for the chart
 pub trait ScaleLabel {
-    // fn labels(&self) -> Vec<String>;
-    fn colors(&self) -> Vec<Color>;
+    // fn colors(&self) -> Vec<Color>;
     fn scale(&self, value: f64) -> f64;
     fn scale_index(&self, label: String) -> usize;
-    // fn get_intervale(&self, len: f64) -> f64;
-    // fn gen_sticks_label_step(&self) -> (Vec<String>, f64);
     fn gen_axes(&self) -> Axes;
-    // To stick for series
     fn to_stick(&self) -> Vec<Stick>;
 }
 /// This trait allows to create a number axes for the chart
@@ -24,15 +17,15 @@ pub trait ScaleNumber {
     fn scale(&self, value: f64) -> f64;
     fn count_distance_step(&self) -> (f64, f64, f64);
     fn to_percent(&self) -> Vec<f64>;
+
     // For Pie
     fn gen_pie(&self) -> Vec<Arc>;
-
-    fn to_percent_radar(&self) -> Vec<f64>;
-    // fn get_intervale(&self, len: f64) -> f64;
-    // fn gen_sticks_label_step(&self) -> (Vec<String>, f64);
+    fn to_percent_radar(&self) -> Vec<f64>;    
     fn gen_axes(&self) -> Axes;
+
     // To stick for series
     fn to_stick(&self) -> Vec<Stick>;
+
     // For Radar
     fn gen_radar_grid(&self, count: usize) -> Vec<Vector>;
 }
