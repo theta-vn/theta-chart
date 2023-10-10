@@ -1,37 +1,17 @@
 use crate::{
     chart::*,
-    color::Color,
     coord::{Axes, Stick},
 };
-
-// use super::ScaleLabel;
 
 #[derive(Debug, Clone, Default)]
 /// A series of labels represented on a chart
 pub struct SLabel {
     labels: Vec<String>,
-    colors: Vec<Color>,
-}
-
-fn gen_colors(num: usize) -> Vec<Color> {
-    // dbg!(&num);
-    if num <= 2 {
-        return vec![Color::default()];
-    }
-    let mut colors: Vec<Color> = vec![Color::default()];
-    for index in 0..(num - 1) {
-        let begin_color = colors[index].clone();
-
-        let color = begin_color.shift_hue();
-        dbg!(index, &begin_color, &color);
-        colors.push(color.clone());
-    }
-    colors
 }
 
 impl SLabel {
-    pub fn new(labels: Vec<String>, colors: Vec<Color>) -> Self {
-        Self { labels, colors }
+    pub fn new(labels: Vec<String>) -> Self {
+        Self { labels }
     }
 
     pub fn labels(&self) -> Vec<String> {
@@ -43,19 +23,14 @@ impl SLabel {
         let v2 = other.labels();
         let labels = merge_vec_string(v1, v2);
 
-        let len = labels.len();
-        let colors = gen_colors(len);
-        Self { labels, colors }
+        Self { labels }
     }
 }
 
 impl From<Vec<String>> for SLabel {
     fn from(labes: Vec<String>) -> Self {
-        let len = labes.len();
-        let colors = gen_colors(len);
         Self {
             labels: labes.clone(),
-            colors: colors,
         }
     }
 }
@@ -63,21 +38,11 @@ impl From<Vec<String>> for SLabel {
 impl From<Vec<&str>> for SLabel {
     fn from(labes: Vec<&str>) -> Self {
         let vec_string: Vec<String> = labes.iter().map(|&s| s.into()).collect();
-        let len = labes.len();
-        // let a = gen_colors(len);
-        let colors = gen_colors(len);
-        Self {
-            labels: vec_string,
-            colors: colors,
-        }
+        Self { labels: vec_string }
     }
 }
 
 impl ScaleLabel for SLabel {
-    fn colors(&self) -> Vec<Color> {
-        self.colors.clone()
-    }
-
     fn scale(&self, value: f64) -> f64 {
         let (min, max) = (0., self.labels.len() as f64);
         let range = max - min;
@@ -89,7 +54,6 @@ impl ScaleLabel for SLabel {
     fn scale_index(&self, s: String) -> usize {
         let labels = self.labels();
         get_index(&labels, s)
-        // 1.
     }
 
     fn gen_axes(&self) -> Axes {
