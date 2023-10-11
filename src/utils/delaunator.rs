@@ -19,8 +19,23 @@ println!("{:?}", result.triangles); // [0, 2, 1, 0, 3, 2]
 ```
 */
 
-pub fn triangle(ax: Series, ay: Series) {
-    
+pub fn triangle(sx: Series, sy: Series) -> Triangulation {
+    let mut ax: SNumber = SNumber::new([].to_vec());
+    let mut ay: SNumber = SNumber::new([].to_vec());
+    let mut points: Vec<Point> = [].to_vec();
+    if let Series::Number(x) = sx {
+        ax = x;
+    }
+    if let Series::Number(y) = sy {
+        ay = y;
+    }
+
+    for (index, data) in ax.series().iter().enumerate() {
+        points.push(Point::new(*data, ay.series()[index]));
+    }
+    let slice = &points[..];
+
+    triangulate(slice)
 }
 
 // #![no_std]
@@ -38,7 +53,10 @@ pub fn triangle(ax: Series, ay: Series) {
 
 use approx::AbsDiffEq;
 
-use crate::{coord::Point, series::Series};
+use crate::{
+    coord::Point,
+    series::{SNumber, Series},
+};
 use core::cmp::Ordering;
 /// Near-duplicate points (where both `x` and `y` only differ within this value)
 /// will not be included in the triangulation for robustness.
@@ -148,8 +166,6 @@ pub fn prev_halfedge(i: usize) -> usize {
         i - 1
     }
 }
-
-
 
 /// Result of the Delaunay triangulation.
 #[derive(Debug, Clone)]
