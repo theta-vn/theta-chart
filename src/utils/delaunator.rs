@@ -316,7 +316,9 @@ impl Triangulation {
     }
 }
 
+
 // data structure for tracking the edges of the advancing convex hull
+#[derive(Debug)]
 struct Hull {
     prev: Vec<usize>,
     next: Vec<usize>,
@@ -362,14 +364,18 @@ impl Hull {
         let dy = p.get_y() - self.center.get_y();
 
         let p = dx / (f64_abs(dx) + f64_abs(dy));
+        // dbg!((p, dx, f64_abs(dx), dy, f64_abs(dy)));
         let a = (if dy > 0.0 { 3.0 - p } else { 1.0 + p }) / 4.0; // [0..1]
-
+        // dbg!(a);
         let len = self.hash.len();
+        // dbg!(len);
         (f64_floor((len as f64) * a) as usize) % len
     }
 
     fn hash_edge(&mut self, p: &Point, i: usize) {
+        
         let key = self.hash_key(p);
+        // dbg!((p, i, key));
         self.hash[key] = i;
     }
 
@@ -377,14 +383,19 @@ impl Hull {
         let mut start: usize = 0;
         let key = self.hash_key(p);
         let len = self.hash.len();
+        dbg!((key, len));
         for j in 0..len {
             start = self.hash[(key + j) % len];
             if start != EMPTY && self.next[start] != EMPTY {
                 break;
             }
         }
+        dbg!(start);
         start = self.prev[start];
+        dbg!(start);
+        
         let mut e = start;
+        dbg!(e);
 
         while p.orient(&points[e], &points[self.next[e]]) <= 0. {
             e = self.next[e];
@@ -392,10 +403,13 @@ impl Hull {
                 return (EMPTY, false);
             }
         }
+        dbg!((e, e == start));
         (e, e == start)
     }
 }
 
+
+// Find center of box(ALL POINTS)
 fn calc_bbox_center(points: &[Point]) -> Point {
     let mut min_x = f64::INFINITY;
     let mut min_y = f64::INFINITY;
@@ -407,7 +421,7 @@ fn calc_bbox_center(points: &[Point]) -> Point {
         max_x = max_x.max(p.get_x());
         max_y = max_y.max(p.get_y());
     }
-    Point::new((min_x + max_x) / 2.0, (min_y + max_y) / 2.0)
+   Point::new((min_x + max_x) / 2.0, (min_y + max_y) / 2.0)
 }
 
 fn find_closest_point(points: &[Point], p0: &Point) -> Option<usize> {
@@ -430,13 +444,15 @@ fn find_closest_point(points: &[Point], p0: &Point) -> Option<usize> {
 fn find_seed_triangle(points: &[Point]) -> Option<(usize, usize, usize)> {
     // pick a seed point close to the center
     let bbox_center = calc_bbox_center(points);
+    
     let i0 = find_closest_point(points, &bbox_center)?;
     let p0 = &points[i0];
-
+    dbg!((&p0, i0));
     // find the point closest to the seed
     let i1 = find_closest_point(points, p0)?;
+    
     let p1 = &points[i1];
-
+    dbg!((&p1, i1));
     // find the third point which forms the smallest circumcircle with the first two
     let mut min_radius = f64::INFINITY;
     let mut i2: usize = 0;
@@ -501,6 +517,7 @@ fn handle_collinear_points(points: &[Point]) -> Triangulation {
 /// For the degenerated case when all points are collinear, returns an empty triangulation where all points are in the hull.
 pub fn triangulate(points: &[Point]) -> Triangulation {
     let seed_triangle = find_seed_triangle(points);
+    dbg!(&seed_triangle);
     if seed_triangle.is_none() {
         return handle_collinear_points(points);
     }
@@ -509,10 +526,11 @@ pub fn triangulate(points: &[Point]) -> Triangulation {
     let (i0, i1, i2) =
         seed_triangle.expect("At this stage, points are guaranteed to yeild a seed triangle");
     let center = points[i0].circumcenter(&points[i1], &points[i2]);
-
+    dbg!(&center);
     let mut triangulation = Triangulation::new(n);
     triangulation.add_triangle(i0, i1, i2, EMPTY, EMPTY, EMPTY);
-
+    
+    dbg!(&triangulation);
     // sort the points by distance from the seed triangle circumcenter
     let mut dists: Vec<_> = points
         .iter()
@@ -520,9 +538,14 @@ pub fn triangulate(points: &[Point]) -> Triangulation {
         .map(|(i, point)| (i, center.dist2(point)))
         .collect();
 
+        // dbg!(&dists);    
+
     sortf(&mut dists);
 
+    dbg!(&dists);
+
     let mut hull = Hull::new(n, center, i0, i1, i2, points);
+    dbg!(&hull);
 
     for (k, &(i, _)) in dists.iter().enumerate() {
         let p = &points[i];
@@ -536,7 +559,7 @@ pub fn triangulate(points: &[Point]) -> Triangulation {
         if i == i0 || i == i1 || i == i2 {
             continue;
         }
-
+        dbg!(k, &p);
         // find a visible edge on the convex hull using edge hash
         let (mut e, walk_back) = hull.find_visible_edge(p, points);
         if e == EMPTY {
@@ -545,7 +568,7 @@ pub fn triangulate(points: &[Point]) -> Triangulation {
 
         // add the first triangle from the point
         let t = triangulation.add_triangle(e, i, hull.next[e], EMPTY, EMPTY, hull.tri[e]);
-
+        dbg!(&triangulation);
         // recursively flip triangles from the point until they satisfy the Delaunay condition
         hull.tri[i] = triangulation.legalize(t + 2, points, &mut hull);
         hull.tri[e] = t; // keep track of boundary triangles on the hull

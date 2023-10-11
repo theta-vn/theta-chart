@@ -17,19 +17,19 @@ fn delaunater() {
 #[test]
 fn delaunay() {
 
-    let xvf64: Vec<f64> = vec![1., 3., 5., 9., 15., 27.,];
-    let xlinear = SNumber::new(xvf64).set_range(0., 28.);    
+    let xvf64: Vec<i64> = vec![1, 12, 8, 9, 2, 4, 9, 4];
+    let xlinear = SNumber::from(xvf64).set_range(0., 28.);    
     let xseires = Series::Number(xlinear);
     // dbg!(&xseires);
 
 
-    let yvf64: Vec<f64> = vec![2., 4., 5., 19., 12., 24.,];
-    let ylinear = SNumber::new(yvf64).set_range(1., 20.);    
+    let yvf64: Vec<i64> = vec![2, 4, 7, 1, 12, 4, 11, 8];
+    let ylinear = SNumber::from(yvf64).set_range(1., 20.);    
     let yseires = Series::Number(ylinear);
     // dbg!(&yseires);
 
-    let vdelaunay = triangle(xseires, yseires);
-    dbg!(vdelaunay);
+    let _vdelaunay = triangle(xseires, yseires);
+    // dbg!(vdelaunay);
     // let points = vec![
     //     Point::new(0., 0.),
     //     Point::new(1., 0.),
