@@ -65,8 +65,8 @@ pub struct Triangulation {
     /// List vertex of Voronol
     pub vertices: Vec<Point>,
 
-    pub voronols: Vec<Vec<usize>>,
-    pub voronol_edges: Vec<Line>,
+    pub voronois: Vec<Vec<usize>>,
+    pub voronoi_edges: Vec<Line>,
 
     pub tuple_triangles: Vec<Vec<usize>>,
     pub tuple_halfedges: Vec<Vec<usize>>,
@@ -83,8 +83,8 @@ impl Triangulation {
             vertices: Vec::new(),
             tuple_triangles: Vec::new(),
             tuple_halfedges: Vec::new(),
-            voronols: Vec::new(),
-            voronol_edges: Vec::new(),
+            voronois: Vec::new(),
+            voronoi_edges: Vec::new(),
         }
     }
 
@@ -525,9 +525,9 @@ pub fn triangulate(points: &[Point]) -> Triangulation {
 
     for index in 0..points.len() {
         if !triangulation.hull.contains(&index) {
-            let mut voronol_all: Vec<(usize, Vec<usize>)> = Vec::new();
+            let mut voronoi_all: Vec<(usize, Vec<usize>)> = Vec::new();
             for (pos, tri) in triangulation.tuple_triangles.iter().enumerate() {
-                // let mut voronol: Vec::new();
+                
                 if tri.contains(&index) {
                     let mut new = tri.clone();
                     if tri[1] == index {
@@ -535,12 +535,12 @@ pub fn triangulate(points: &[Point]) -> Triangulation {
                     }
                     new.retain(|&x| x != index);
 
-                    voronol_all.push((pos, new));
+                    voronoi_all.push((pos, new));
                 }
             }
 
-            let voronol = sortv(voronol_all);
-            triangulation.voronols.push(voronol);
+            let voronoi = sortv(voronoi_all);
+            triangulation.voronois.push(voronoi);
         }
     }
 
@@ -558,7 +558,7 @@ pub fn triangulate(points: &[Point]) -> Triangulation {
 
         for (pos, tri) in triangulation.tuple_triangles.iter().enumerate() {
             if tri.contains(&pi0) && tri.contains(&pi1) {
-                triangulation.voronol_edges.push(Line::new(
+                triangulation.voronoi_edges.push(Line::new(
                     triangulation.vertices[pos].clone(),
                     square.clone(),
                 ))
@@ -569,12 +569,12 @@ pub fn triangulate(points: &[Point]) -> Triangulation {
     triangulation
 }
 
-fn sortv(vec_voronol: Vec<(usize, Vec<usize>)>) -> Vec<usize> {
+fn sortv(vec_voronoi: Vec<(usize, Vec<usize>)>) -> Vec<usize> {
     let mut sort: Vec<(usize, Vec<usize>)> = Vec::new();
-    if vec_voronol.len() <= 3 {
-        sort = vec_voronol;
+    if vec_voronoi.len() <= 3 {
+        sort = vec_voronoi;
     } else {
-        let mut slice = vec_voronol.clone();
+        let mut slice = vec_voronoi.clone();
         sort.push(slice[0].clone());
         slice.remove(0);
 
