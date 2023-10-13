@@ -14,10 +14,21 @@ impl Default for Vector {
     }
 }
 
+impl From<(Point, Point)> for Vector {
+    fn from(value: (Point, Point)) -> Self {
+        Self(Vector3::new(
+            value.1.get_x() - value.0.get_x(),
+            value.1.get_y() - value.0.get_y(),
+            1.,
+        ))
+    }
+}
+
 impl Vector {
     pub fn new(x: f64, y: f64) -> Self {
         Self(Vector3::new(x, y, 1.))
     }
+
     fn get(&self) -> Vector3D {
         self.0
     }
