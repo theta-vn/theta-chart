@@ -129,6 +129,10 @@ impl Point {
 
         dx * (ey * cp - bp * fy) - dy * (ex * cp - bp * fx) + ap * (ex * fy - ey * fx) < 0.0
     }
+
+    pub fn midpoint(&self, b: &Self) -> Self {        
+        Self(Point3::new((self.0.x + b.0.x)/2., (self.0.y + b.0.y)/2., 1.))
+    }
 }
 
 impl approx::AbsDiffEq for Point {

@@ -1,23 +1,11 @@
-/*!
-A very fast 2D [Delaunay Triangulation](https://en.wikipedia.org/wiki/Delaunay_triangulation) library for Rust.
-A port of [Delaunator](https://github.com/mapbox/delaunator).
-
-# Example
-
-```rust
-use delaunator::{Point, triangulate};
-
-let points = vec![
-    Point { x: 0., y: 0. },
-    Point { x: 1., y: 0. },
-    Point { x: 1., y: 1. },
-    Point { x: 0., y: 1. },
-];
-
-let result = triangulate(&points);
-println!("{:?}", result.triangles); // [0, 2, 1, 0, 3, 2]
-```
-*/
+use crate::{
+    coord::{Line, Point, Vector},
+    series::{SNumber, Series},
+    TAU,
+};
+use approx::AbsDiffEq;
+use core::cmp::Ordering;
+pub const EMPTY: usize = usize::MAX;
 
 pub fn triangle(sx: Series, sy: Series) -> Triangulation {
     let mut ax: SNumber = SNumber::new([].to_vec());
@@ -37,117 +25,6 @@ pub fn triangle(sx: Series, sy: Series) -> Triangulation {
 
     triangulate(slice)
 }
-
-// #![no_std]
-// #![allow(clippy::many_single_char_names)]
-
-// #[cfg(feature = "std")]
-// extern crate std;
-
-// #[macro_use]
-// extern crate alloc;
-
-// use alloc::vec::Vec;
-// use core::{cmp::Ordering, fmt};
-// use robust::orient2d;
-
-use approx::AbsDiffEq;
-
-use crate::{
-    coord::Point,
-    series::{SNumber, Series},
-};
-use core::cmp::Ordering;
-/// Near-duplicate points (where both `x` and `y` only differ within this value)
-/// will not be included in the triangulation for robustness.
-// pub const EPSILON: f64 = f64::EPSILON * 2.0;
-
-// /// Represents a 2D point in the input vector.
-// #[derive(Clone, PartialEq, Default)]
-// pub struct Point {
-//     pub x: f64,
-//     pub y: f64,
-// }
-
-// impl fmt::Debug for Point {
-//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//         write!(f, "[{}, {}]", self.x, self.y)
-//     }
-// }
-
-// impl From<&Point> for robust::Coord<f64> {
-//     fn from(p: &Point) -> robust::Coord<f64> {
-//         robust::Coord::<f64> { x: p.x, y: p.y }
-//     }
-// }
-
-// impl Point {
-//     fn dist2(&self, p: &Self) -> f64 {
-//         let dx = self.x - p.x;
-//         let dy = self.y - p.y;
-//         dx * dx + dy * dy
-//     }
-
-//     /// Returns a **negative** value if ```self```, ```q``` and ```r``` occur in counterclockwise order (```r``` is to the left of the directed line ```self``` --> ```q```)
-//     /// Returns a **positive** value if they occur in clockwise order(```r``` is to the right of the directed line ```self``` --> ```q```)
-//     /// Returns zero is they are collinear
-//     fn orient(&self, q: &Self, r: &Self) -> f64 {
-//         // robust-rs orients Y-axis upwards, our convention is Y downwards. This means that the interpretation of the result must be flipped
-//         orient2d(self.into(), q.into(), r.into())
-//     }
-
-//     fn circumdelta(&self, b: &Self, c: &Self) -> (f64, f64) {
-//         let dx = b.x - self.x;
-//         let dy = b.y - self.y;
-//         let ex = c.x - self.x;
-//         let ey = c.y - self.y; let vec_x = chart.
-
-//         let bl = dx * dx + dy * dy;
-//         let cl = ex * ex + ey * ey;
-//         let d = 0.5 / (dx * ey - dy * ex);
-
-//         let x = (ey * bl - dy * cl) * d;
-//         let y = (dx * cl - ex * bl) * d;
-//         (x, y)
-//     }
-
-//     fn circumradius2(&self, b: &Self, c: &Self) -> f64 {
-//         let (x, y) = self.circumdelta(b, c);
-//         x * x + y * y
-//     }
-
-//     fn circumcenter(&self, b: &Self, c: &Self) -> Self {
-//         let (x, y) = self.circumdelta(b, c);
-//         Self {
-//             x: self.x + x,
-//             y: self.y + y,
-//         }
-//     }
-
-//     fn in_circle(&self, b: &Self, c: &Self, p: &Self) -> bool {
-//         let dx = self.x - p.x;
-//         let dy = self.y - p.y;
-//         let ex = b.x - p.x;
-//         let ey = b.y - p.y;
-//         let fx = c.x - p.x;
-//         let fy = c.y - p.y;
-
-//         let ap = dx * dx + dy * dy;
-//         let bp = ex * ex + ey * ey;
-//         let cp = fx * fx + fy * fy;
-
-//         dx * (ey * cp - bp * fy) - dy * (ex * cp - bp * fx) + ap * (ex * fy - ey * fx) < 0.0
-//     }
-
-//     fn nearly_equals(&self, p: &Self) -> bool {
-//         f64_abs(self.x - p.x) <= EPSILON && f64_abs(self.y - p.y) <= EPSILON
-//     }
-// }
-
-/// Represents the area outside of the triangulation.
-/// Halfedges on the convex hull (which don't have an adjacent halfedge)
-/// will have this value.
-pub const EMPTY: usize = usize::MAX;
 
 /// Next halfedge in a triangle.
 pub fn next_halfedge(i: usize) -> usize {
@@ -186,12 +63,10 @@ pub struct Triangulation {
     pub hull: Vec<usize>,
 
     /// List vertex of Voronol
-    pub in_hull: Vec<usize>,
-
-    /// List vertex of Voronol
     pub vertices: Vec<Point>,
 
     pub voronols: Vec<Vec<usize>>,
+    pub voronol_edges: Vec<Line>,
 
     pub tuple_triangles: Vec<Vec<usize>>,
     pub tuple_halfedges: Vec<Vec<usize>>,
@@ -205,11 +80,11 @@ impl Triangulation {
             triangles: Vec::with_capacity(max_triangles * 3),
             halfedges: Vec::with_capacity(max_triangles * 3),
             hull: Vec::new(),
-            in_hull: Vec::new(),
             vertices: Vec::new(),
             tuple_triangles: Vec::new(),
             tuple_halfedges: Vec::new(),
             voronols: Vec::new(),
+            voronol_edges: Vec::new(),
         }
     }
 
@@ -345,7 +220,7 @@ struct Hull {
 
 impl Hull {
     fn new(n: usize, center: Point, i0: usize, i1: usize, i2: usize, points: &[Point]) -> Self {
-        let hash_len = f64_sqrt(n as f64) as usize;
+        let hash_len = (n as f64).sqrt() as usize;
 
         let mut hull = Self {
             prev: vec![0; n],            // edge to prev edge
@@ -378,13 +253,13 @@ impl Hull {
         let dx = p.get_x() - self.center.get_x();
         let dy = p.get_y() - self.center.get_y();
 
-        let p = dx / (f64_abs(dx) + f64_abs(dy));
+        let p = dx / (dx.abs() + dy.abs());
 
         let a = (if dy > 0.0 { 3.0 - p } else { 1.0 + p }) / 4.0; // [0..1]
 
         let len = self.hash.len();
 
-        (f64_floor((len as f64) * a) as usize) % len
+        (((len as f64) * a).floor() as usize) % len
     }
 
     fn hash_edge(&mut self, p: &Point, i: usize) {
@@ -650,8 +525,6 @@ pub fn triangulate(points: &[Point]) -> Triangulation {
 
     for index in 0..points.len() {
         if !triangulation.hull.contains(&index) {
-            triangulation.in_hull.push(index);
-
             let mut voronol_all: Vec<(usize, Vec<usize>)> = Vec::new();
             for (pos, tri) in triangulation.tuple_triangles.iter().enumerate() {
                 // let mut voronol: Vec::new();
@@ -668,6 +541,28 @@ pub fn triangulate(points: &[Point]) -> Triangulation {
 
             let voronol = sortv(voronol_all);
             triangulation.voronols.push(voronol);
+        }
+    }
+
+    let mut temp = triangulation.hull.clone();
+    let f = triangulation.hull.first().unwrap();
+    temp.push(*f);
+
+    for pos in 1..temp.len() {
+        let pi0 = temp[pos - 1];
+        let pi1 = temp[pos];
+        let p0 = &points[pi0];
+        let p1 = &points[pi1];
+
+        let square = Vector::from((p0.clone(), p1.clone())).az_rotate_tau(0.25 * TAU);
+
+        for (pos, tri) in triangulation.tuple_triangles.iter().enumerate() {
+            if tri.contains(&pi0) && tri.contains(&pi1) {
+                triangulation.voronol_edges.push(Line::new(
+                    triangulation.vertices[pos].clone(),
+                    square.clone(),
+                ))
+            }
         }
     }
 
@@ -701,56 +596,4 @@ fn sortv(vec_voronol: Vec<(usize, Vec<usize>)>) -> Vec<usize> {
         result.push(data.0);
     }
     result
-}
-
-#[cfg(feature = "std")]
-#[inline]
-fn f64_abs(f: f64) -> f64 {
-    f.abs()
-}
-
-#[cfg(not(feature = "std"))]
-#[inline]
-fn f64_abs(f: f64) -> f64 {
-    const SIGN_BIT: u64 = 1 << 63;
-    f64::from_bits(f64::to_bits(f) & !SIGN_BIT)
-}
-
-#[cfg(feature = "std")]
-#[inline]
-fn f64_floor(f: f64) -> f64 {
-    f.floor()
-}
-
-#[cfg(not(feature = "std"))]
-#[inline]
-fn f64_floor(f: f64) -> f64 {
-    let mut res = (f as i64) as f64;
-    if res > f {
-        res -= 1.0;
-    }
-    res as f64
-}
-
-#[cfg(feature = "std")]
-#[inline]
-fn f64_sqrt(f: f64) -> f64 {
-    f.sqrt()
-}
-
-#[cfg(not(feature = "std"))]
-#[inline]
-fn f64_sqrt(f: f64) -> f64 {
-    if f < 2.0 {
-        return f;
-    };
-
-    let sc = f64_sqrt(f / 4.0) * 2.0;
-    let lc = sc + 1.0;
-
-    if lc * lc > f {
-        sc
-    } else {
-        lc
-    }
 }

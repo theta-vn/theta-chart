@@ -20,10 +20,10 @@ impl Rec {
     }
 
     pub fn get_width(&self) -> f64 {
-        self.vector.get_x()
+        self.vector.get_x().abs()
     }
 
     pub fn get_height(&self) -> f64 {
-        self.vector.get_y()
+        self.vector.get_y().abs()
     }
 }
